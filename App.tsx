@@ -1,45 +1,43 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import React, { useMemo } from 'react';
+import { StatusBar } from 'react-native';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
+import { Provider } from 'react-redux';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { store } from './src/app/store';
+import { RootNavigator } from './src/app/navigation/RootNavigator';
+import { useTheme } from './src/theme';
 
-import { NewAppScreen } from '@react-native/new-app-screen';
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
-
-function App() {
-  const isDarkMode = useColorScheme() === 'dark';
-
+const AppContent = () => {
+  const theme = useTheme();
+  const navTheme = useMemo(
+    () => ({
+      ...DefaultTheme,
+      dark: theme.isDark,
+      colors: {
+        ...DefaultTheme.colors,
+        primary: theme.colors.primary,
+        background: theme.colors.background,
+        card: theme.colors.surface,
+        text: theme.colors.text,
+        border: theme.colors.border,
+      },
+    }),
+    [theme],
+  );
   return (
+    <NavigationContainer theme={navTheme}>
+      <StatusBar barStyle={theme.isDark ? 'light-content' : 'dark-content'} />
+      <RootNavigator />
+    </NavigationContainer>
+  );
+};
+
+const App = () => (
+  <Provider store={store}>
     <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
       <AppContent />
     </SafeAreaProvider>
-  );
-}
-
-function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
-
-  return (
-    <View style={styles.container}>
-      <NewAppScreen
-        templateFileName="App.tsx"
-        safeAreaInsets={safeAreaInsets}
-      />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
+  </Provider>
+);
 
 export default App;
