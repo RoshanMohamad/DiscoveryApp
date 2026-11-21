@@ -1,0 +1,21 @@
+/* eslint-env jest */
+// Native modules don't exist under Jest, so replace them with in-memory fakes.
+jest.mock('react-native-config', () => ({
+  __esModule: true,
+  default: { AUTH_BASE_URL: 'https://dummyjson.com' },
+}));
+
+jest.mock('react-native-keychain', () => {
+  let stored = false;
+  return {
+    setGenericPassword: jest.fn(async (username, password) => {
+      stored = { username, password, service: 'test' };
+      return stored;
+    }),
+    getGenericPassword: jest.fn(async () => stored),
+    resetGenericPassword: jest.fn(async () => {
+      stored = false;
+      return true;
+    }),
+  };
+});

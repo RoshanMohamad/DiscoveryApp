@@ -1,5 +1,6 @@
 module.exports = {
   preset: '@react-native/jest-preset',
+  setupFiles: ['<rootDir>/jest.setup.js'],
   // Fonts are native assets; Jest only needs a placeholder value.
   moduleNameMapper: { '\\.ttf$': '<rootDir>/__mocks__/fileMock.js' },
   // react-navigation, react-redux and the Feather icons ship ES modules; let Babel transform them.
