@@ -1,30 +1,55 @@
 import React from 'react';
-import { Button } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { ROUTES } from '../../../app/navigation/routes';
 import type { AuthScreenProps } from '../../../app/navigation/types';
 import { useAppDispatch } from '../../../app/hooks';
 import { AppText } from '../../../shared/components/AppText';
+import { Button } from '../../../shared/components/Button';
 import { Screen } from '../../../shared/components/Screen';
+import { spacing } from '../../../theme';
+import { LoginForm } from '../components/LoginForm';
 import { signedIn } from '../authSlice';
 
-/** Placeholder: real form (react-hook-form + Zod) comes in the auth commit. */
+const styles = StyleSheet.create({
+  content: { paddingVertical: spacing.xl },
+  heading: { marginBottom: spacing.xl },
+  footer: { marginTop: spacing.lg },
+});
+
 export const LoginScreen = ({
   navigation,
 }: AuthScreenProps<typeof ROUTES.Login>) => {
   const dispatch = useAppDispatch();
+
+  // Placeholder: the DummyJSON login call replaces this in the next auth commit.
+  const handleLogin = (values: { username: string }) => {
+    dispatch(
+      signedIn({
+        id: 0,
+        username: values.username,
+        firstName: values.username,
+      }),
+    );
+  };
+
   return (
     <Screen>
-      <AppText variant="title">Login</AppText>
-      <Button
-        title="Dev sign in"
-        onPress={() =>
-          dispatch(signedIn({ id: 1, username: 'emilys', firstName: 'Emily' }))
-        }
-      />
-      <Button
-        title="Go to Register"
-        onPress={() => navigation.navigate(ROUTES.Register)}
-      />
+      <ScrollView
+        contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled"
+      >
+        <AppText variant="title" style={styles.heading}>
+          Welcome to Passport
+        </AppText>
+        <LoginForm onSubmit={handleLogin} />
+        <View style={styles.footer}>
+          <Button
+            variant="secondary"
+            title="Create an account"
+            onPress={() => navigation.navigate(ROUTES.Register)}
+          />
+        </View>
+      </ScrollView>
     </Screen>
   );
 };
