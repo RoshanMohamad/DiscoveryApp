@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useColorScheme } from 'react-native';
 import { darkColors, lightColors, type ColorPalette } from './colors';
 import { MIN_TOUCH_SIZE, radius, spacing } from './spacing';
-import { typography } from './typography';
+import { typography, type TypographyVariant } from './typography';
 
 export type Theme = {
   isDark: boolean;
@@ -32,4 +32,4 @@ export const useTheme = (): Theme => {
 };
 
 export { lightColors, darkColors, spacing, radius, typography };
-export type { ColorPalette };
+export type { ColorPalette, TypographyVariant };
