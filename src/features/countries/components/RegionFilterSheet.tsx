@@ -26,7 +26,9 @@ const makeStyles = (theme: Theme) =>
       padding: theme.spacing.lg,
       borderTopLeftRadius: theme.radius.lg,
       borderTopRightRadius: theme.radius.lg,
-      backgroundColor: theme.colors.surface,
+      backgroundColor: theme.colors.sheet,
+      borderTopWidth: 1,
+      borderColor: theme.colors.glassBorder,
     },
     header: {
       flexDirection: 'row',
@@ -49,7 +51,7 @@ const makeStyles = (theme: Theme) =>
       marginBottom: theme.spacing.sm,
       borderRadius: theme.radius.md,
       borderWidth: 1,
-      borderColor: theme.colors.border,
+      borderColor: theme.colors.glassBorder,
       gap: theme.spacing.md,
     },
     rowSelected: {

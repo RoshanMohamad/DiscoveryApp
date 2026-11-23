@@ -12,7 +12,6 @@ import { useAppSelector } from '../../../app/hooks';
 import { ROUTES } from '../../../app/navigation/routes';
 import type { HomeStackScreenProps } from '../../../app/navigation/types';
 import { AppText } from '../../../shared/components/AppText';
-import { images } from '../../../assets/images';
 import { BrandLogo } from '../../../shared/components/BrandLogo';
 import { HeroBackground } from '../../../shared/components/HeroBackground';
 import { EmptyView } from '../../../shared/components/EmptyView';
@@ -74,8 +73,8 @@ const makeStyles = (theme: Theme) =>
       height: theme.minTouchSize,
       borderRadius: theme.radius.md,
       borderWidth: 1,
-      borderColor: theme.colors.border,
-      backgroundColor: theme.colors.surface,
+      borderColor: theme.colors.glassBorder,
+      backgroundColor: theme.colors.glass,
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -180,7 +179,7 @@ export const HomeScreen = ({
 
   return (
     <Screen style={styles.screen}>
-      <HeroBackground source={images.night} scrim fade style={styles.hero}>
+      <HeroBackground twilight fade style={styles.hero}>
         <View
           style={[styles.header, { paddingTop: insets.top + theme.spacing.sm }]}
         >

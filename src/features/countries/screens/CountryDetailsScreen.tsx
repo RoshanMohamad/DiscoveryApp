@@ -82,8 +82,8 @@ const makeStyles = (theme: Theme) =>
       borderRadius: theme.radius.md,
       borderWidth: 1,
       borderStyle: 'dashed',
-      borderColor: theme.colors.border,
-      backgroundColor: theme.colors.surface,
+      borderColor: theme.colors.glassBorder,
+      backgroundColor: theme.colors.glass,
     },
     placeholderText: { marginTop: theme.spacing.sm, textAlign: 'center' },
   });

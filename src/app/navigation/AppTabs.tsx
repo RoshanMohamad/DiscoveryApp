@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import Feather from '@react-native-vector-icons/feather';
 import { FavouritesScreen } from '../../features/favourites/screens/FavouritesScreen';
 import { ProfileScreen } from '../../features/settings/screens/ProfileScreen';
@@ -70,8 +71,16 @@ export const AppTabs = () => {
         tabBarInactiveTintColor: theme.colors.textMuted,
         tabBarIcon: TAB_BAR_ICONS[route.name],
         tabBarStyle: {
-          backgroundColor: theme.colors.surface,
-          borderTopColor: theme.colors.border,
+          backgroundColor: theme.colors.sheet,
+          borderColor: theme.colors.glassBorder,
+          borderTopWidth: 1,
+          borderTopLeftRadius: radius.lg,
+          borderTopRightRadius: radius.lg,
+          // Details is a full-screen page in the design: no tab bar on it.
+          display:
+            getFocusedRouteNameFromRoute(route) === ROUTES.CountryDetails
+              ? 'none'
+              : 'flex',
         },
       })}
     >

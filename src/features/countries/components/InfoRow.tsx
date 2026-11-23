@@ -18,8 +18,8 @@ const makeStyles = (theme: Theme) =>
       marginBottom: theme.spacing.sm,
       borderRadius: theme.radius.md,
       borderWidth: 1,
-      borderColor: theme.colors.border,
-      backgroundColor: theme.colors.surface,
+      borderColor: theme.colors.glassBorder,
+      backgroundColor: theme.colors.glass,
     },
     iconBox: {
       width: ICON_BOX,

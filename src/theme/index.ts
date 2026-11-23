@@ -6,6 +6,7 @@ import {
   darkColors,
   lightColors,
   primaryGradient,
+  screenGradient,
   withAlpha,
   type ColorPalette,
 } from './colors';
@@ -19,6 +20,8 @@ export type Theme = {
   radius: typeof radius;
   iconSize: typeof iconSize;
   gradients: {
+    /** Page background wash (top-left -> bottom-right). */
+    screen: readonly [string, string, string];
     /** Left -> right fill for primary buttons. */
     primary: readonly [string, string];
     /** Transparent at the top, solid screen background at the bottom: fades photos into the page. */
@@ -41,9 +44,10 @@ export const buildTheme = (isDark: boolean): Theme => {
     typography,
     minTouchSize: MIN_TOUCH_SIZE,
     gradients: {
+      screen: isDark ? screenGradient.dark : screenGradient.light,
       primary: isDark ? primaryGradient.dark : primaryGradient.light,
       fadeToBackground: [withAlpha(colors.background, 0), colors.background],
-      scrim: ['rgba(8, 6, 30, 0.35)', 'rgba(8, 6, 30, 0.75)'],
+      scrim: ['rgba(120, 80, 220, 0.30)', 'rgba(30, 20, 90, 0.55)'],
     },
   };
 };

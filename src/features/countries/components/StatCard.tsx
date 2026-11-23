@@ -15,8 +15,8 @@ const makeStyles = (theme: Theme) =>
       padding: theme.spacing.md,
       borderRadius: theme.radius.md,
       borderWidth: 1,
-      borderColor: theme.colors.border,
-      backgroundColor: theme.colors.surface,
+      borderColor: theme.colors.glassBorder,
+      backgroundColor: theme.colors.glass,
     },
     value: { marginTop: theme.spacing.sm, textAlign: 'center' },
   });

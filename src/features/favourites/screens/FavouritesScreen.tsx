@@ -2,7 +2,6 @@ import React, { useCallback, useMemo } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import Feather from '@react-native-vector-icons/feather';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { images } from '../../../assets/images';
 import { useAppSelector } from '../../../app/hooks';
 import { ROUTES } from '../../../app/navigation/routes';
 import type { AppTabScreenProps } from '../../../app/navigation/types';
@@ -65,7 +64,7 @@ export const FavouritesScreen = ({
   );
 
   const header = (
-    <HeroBackground source={images.night} scrim fade style={styles.hero}>
+    <HeroBackground twilight fade style={styles.hero}>
       <View style={[styles.header, { paddingTop: insets.top + spacing.md }]}>
         <View style={styles.titleRow}>
           <Feather
