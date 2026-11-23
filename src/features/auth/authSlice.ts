@@ -4,15 +4,18 @@ export type AuthUser = {
   id: number;
   username: string;
   firstName: string;
+  lastName: string;
 };
 
-type AuthState = {
+export type AuthState = {
   user: AuthUser | null;
+  /** True until the launch-time session check (Keychain + /auth/me) finishes. */
+  isRestoring: boolean;
 };
 
-const initialState: AuthState = { user: null };
+const initialState: AuthState = { user: null, isRestoring: true };
 
-/** Minimal for now: real login/session restore arrives in the auth commits. */
+/** Profile only (not secret). Tokens live in the Keychain, never here. */
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -23,10 +26,15 @@ const authSlice = createSlice({
     signedOut: state => {
       state.user = null;
     },
+    restoreFinished: state => {
+      state.isRestoring = false;
+    },
   },
 });
 
-export const { signedIn, signedOut } = authSlice.actions;
+export const { signedIn, signedOut, restoreFinished } = authSlice.actions;
 export const authReducer = authSlice.reducer;
 export const selectIsAuthenticated = (state: { auth: AuthState }) =>
   state.auth.user !== null;
+export const selectIsRestoring = (state: { auth: AuthState }) =>
+  state.auth.isRestoring;

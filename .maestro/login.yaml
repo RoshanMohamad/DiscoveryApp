@@ -1,0 +1,17 @@
+# Logs in with the DummyJSON demo account and checks the Home greeting.
+# Run: maestro test .maestro/login.yaml   (emulator/device with the app installed)
+appId: com.passport
+---
+- launchApp:
+    clearState: true
+- assertVisible: "Welcome to Passport"
+# Validation: empty submit shows inline errors and stays on Login.
+- tapOn: "Log in"
+- assertVisible: "Welcome to Passport"
+- tapOn: "Username"
+- inputText: "emilys"
+- tapOn: "Password"
+- inputText: "emilyspass"
+- hideKeyboard
+- tapOn: "Log in"
+- assertVisible: "Hello, Emily"

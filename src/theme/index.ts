@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 import { useColorScheme } from 'react-native';
+import { useAppSelector } from '../app/hooks';
+import { selectThemeMode } from '../features/settings/themeSlice';
 import { darkColors, lightColors, type ColorPalette } from './colors';
 import { MIN_TOUCH_SIZE, radius, spacing } from './spacing';
 import { typography, type TypographyVariant } from './typography';
@@ -23,11 +25,13 @@ export const buildTheme = (isDark: boolean): Theme => ({
 });
 
 /**
- * Returns the active theme. For now it follows the system colour scheme;
- * the persisted dark-mode toggle (themeSlice) will override this later.
+ * Returns the active theme. The persisted toggle wins; until the user picks a
+ * side ("system") it follows the phone's colour scheme.
  */
 export const useTheme = (): Theme => {
-  const isDark = useColorScheme() === 'dark';
+  const mode = useAppSelector(selectThemeMode);
+  const systemIsDark = useColorScheme() === 'dark';
+  const isDark = mode === 'system' ? systemIsDark : mode === 'dark';
   return useMemo(() => buildTheme(isDark), [isDark]);
 };
 
