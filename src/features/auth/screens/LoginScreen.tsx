@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { ROUTES } from '../../../app/navigation/routes';
 import type { AuthScreenProps } from '../../../app/navigation/types';
@@ -24,6 +24,15 @@ export const LoginScreen = ({
 }: AuthScreenProps<typeof ROUTES.Login>) => {
   const dispatch = useAppDispatch();
   const [error, setError] = useState<string | null>(null);
+  const justRegistered = route.params?.registered;
+
+  // Login stays mounted under Register, so a stale error from an earlier
+  // attempt would otherwise sit next to the success message.
+  useEffect(() => {
+    if (justRegistered) {
+      setError(null);
+    }
+  }, [justRegistered]);
 
   const handleLogin = async (values: LoginValues) => {
     setError(null);
@@ -43,7 +52,7 @@ export const LoginScreen = ({
         <AppText variant="title" style={styles.heading}>
           Welcome to Passport
         </AppText>
-        {route.params?.registered ? (
+        {justRegistered && !error ? (
           <Banner
             kind="success"
             message="Account created! Log in to continue."
