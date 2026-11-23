@@ -15,9 +15,9 @@ const makeStyles = (theme: Theme) =>
       flexDirection: 'row',
       padding: theme.spacing.xs,
       borderRadius: theme.radius.md,
-      backgroundColor: theme.colors.surface,
+      backgroundColor: theme.colors.glass,
       borderWidth: 1,
-      borderColor: theme.colors.border,
+      borderColor: theme.colors.glassBorder,
     },
     tab: {
       flex: 1,

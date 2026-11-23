@@ -45,17 +45,11 @@ export const createLinking = (
     screens: {
       [ROUTES.App]: {
         screens: {
-          [ROUTES.HomeTab]: {
-            // Keep Home under Details so "back" works after a deep link.
-            initialRouteName: ROUTES.Home,
-            screens: {
-              [ROUTES.CountryDetails]: {
-                path: `${COUNTRY_PATH}/:code`,
-                // Links may be lower-case: normalise before it becomes a param.
-                parse: { code: (code: string) => code.toUpperCase() },
-              },
-            },
+          [ROUTES.CountryDetails]: {
+            path: `${COUNTRY_PATH}/:code`,
+            parse: { code: (code: string) => code.toUpperCase() },
           },
+          [ROUTES.Tabs]: { path: 'tabs' },
         },
       },
     },

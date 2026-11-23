@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import Feather from '@react-native-vector-icons/feather';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppText } from '../../../shared/components/AppText';
 import { Button } from '../../../shared/components/Button';
 import { useTheme, type Theme } from '../../../theme';
@@ -21,12 +22,15 @@ const makeStyles = (theme: Theme) =>
       justifyContent: 'flex-end',
       backgroundColor: theme.colors.overlay,
     },
+    // Floating card with all corners rounded, inset from the screen edges.
     sheet: {
       maxHeight: '85%',
+      marginHorizontal: theme.spacing.md,
       padding: theme.spacing.lg,
-      borderTopLeftRadius: theme.radius.lg,
-      borderTopRightRadius: theme.radius.lg,
-      backgroundColor: theme.colors.surface,
+      borderRadius: theme.radius.lg,
+      backgroundColor: theme.colors.sheet,
+      borderWidth: 1,
+      borderColor: theme.colors.glassBorder,
     },
     header: {
       flexDirection: 'row',
@@ -39,7 +43,7 @@ const makeStyles = (theme: Theme) =>
       height: theme.minTouchSize,
       alignItems: 'center',
       justifyContent: 'center',
-      marginRight: -theme.spacing.md,
+      marginRight: -theme.spacing.sm,
     },
     row: {
       minHeight: theme.minTouchSize,
@@ -49,7 +53,7 @@ const makeStyles = (theme: Theme) =>
       marginBottom: theme.spacing.sm,
       borderRadius: theme.radius.md,
       borderWidth: 1,
-      borderColor: theme.colors.border,
+      borderColor: theme.colors.glassBorder,
       gap: theme.spacing.md,
     },
     rowSelected: {
@@ -57,6 +61,23 @@ const makeStyles = (theme: Theme) =>
       backgroundColor: theme.colors.primaryMuted,
     },
     rowLabel: { flex: 1 },
+    // Radio: outlined ring, with a filled dot inside when selected.
+    radio: {
+      width: 22,
+      height: 22,
+      borderRadius: theme.radius.pill,
+      borderWidth: 2,
+      borderColor: theme.colors.border,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    radioSelected: { borderColor: theme.colors.primary },
+    radioDot: {
+      width: 10,
+      height: 10,
+      borderRadius: theme.radius.pill,
+      backgroundColor: theme.colors.primary,
+    },
     apply: { marginTop: theme.spacing.md },
   });
 
@@ -70,6 +91,7 @@ export const RegionFilterSheet = ({
 }: Props) => {
   const theme = useTheme();
   const styles = useMemo(() => makeStyles(theme), [theme]);
+  const insets = useSafeAreaInsets();
   const [draft, setDraft] = useState(selected);
 
   // Each time the sheet opens, start from the filter that is currently applied.
@@ -93,7 +115,12 @@ export const RegionFilterSheet = ({
           accessibilityLabel="Close filter"
           onPress={onClose}
         />
-        <View style={styles.sheet}>
+        <View
+          style={[
+            styles.sheet,
+            { marginBottom: Math.max(insets.bottom, theme.spacing.lg) },
+          ]}
+        >
           <View style={styles.header}>
             <AppText variant="heading">Filter by Region</AppText>
             <Pressable
@@ -129,13 +156,11 @@ export const RegionFilterSheet = ({
                   <AppText style={styles.rowLabel}>
                     {region === ALL_REGIONS ? 'All Regions' : region}
                   </AppText>
-                  <Feather
-                    name={isSelected ? 'check-circle' : 'circle'}
-                    size={theme.iconSize.md}
-                    color={
-                      isSelected ? theme.colors.primary : theme.colors.border
-                    }
-                  />
+                  <View
+                    style={[styles.radio, isSelected && styles.radioSelected]}
+                  >
+                    {isSelected ? <View style={styles.radioDot} /> : null}
+                  </View>
                 </Pressable>
               );
             })}

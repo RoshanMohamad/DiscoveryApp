@@ -3,11 +3,12 @@ import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { ROUTES } from '../../../app/navigation/routes';
 import type { AuthScreenProps } from '../../../app/navigation/types';
 import { useAppDispatch } from '../../../app/hooks';
+import { images } from '../../../assets/images';
 import { AppText } from '../../../shared/components/AppText';
 import { Banner } from '../../../shared/components/Banner';
 import { Button } from '../../../shared/components/Button';
 import { GoogleIcon } from '../../../shared/components/GoogleIcon';
-import { Screen } from '../../../shared/components/Screen';
+import { HeroBackground } from '../../../shared/components/HeroBackground';
 import { showNotAvailable } from '../../../shared/utils/notAvailable';
 import { useTheme, type Theme } from '../../../theme';
 import { AuthHero } from '../components/AuthHero';
@@ -17,7 +18,7 @@ import type { LoginValues } from '../schemas';
 
 const makeStyles = (theme: Theme) =>
   StyleSheet.create({
-    screen: { padding: 0 },
+    background: { flex: 1 },
     content: {
       paddingHorizontal: theme.spacing.lg,
       paddingBottom: theme.spacing.xl,
@@ -74,7 +75,7 @@ export const LoginScreen = ({
   };
 
   return (
-    <Screen style={styles.screen}>
+    <HeroBackground source={images.night} scrim style={styles.background}>
       <ScrollView
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
@@ -125,6 +126,6 @@ export const LoginScreen = ({
           </View>
         </View>
       </ScrollView>
-    </Screen>
+    </HeroBackground>
   );
 };

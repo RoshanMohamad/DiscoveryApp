@@ -24,8 +24,15 @@ const AVATAR_SIZE = 96;
 
 const makeStyles = (theme: Theme) =>
   StyleSheet.create({
-    title: { marginBottom: theme.spacing.lg },
-    identity: { alignItems: 'center', marginBottom: theme.spacing.xl },
+    screen: { padding: 0 },
+    title: { paddingHorizontal: theme.spacing.lg, paddingTop: theme.spacing.lg },
+    body: { flex: 1, paddingHorizontal: theme.spacing.lg },
+    identity: {
+      alignItems: 'center',
+      marginBottom: theme.spacing.xl,
+      marginTop: theme.spacing.xl,
+      zIndex: 1,
+    },
     avatar: {
       width: AVATAR_SIZE,
       height: AVATAR_SIZE,
@@ -45,8 +52,8 @@ const makeStyles = (theme: Theme) =>
     card: {
       borderRadius: theme.radius.md,
       borderWidth: 1,
-      borderColor: theme.colors.border,
-      backgroundColor: theme.colors.surface,
+      borderColor: theme.colors.glassBorder,
+      backgroundColor: theme.colors.glass,
       overflow: 'hidden',
     },
     row: {
@@ -120,88 +127,87 @@ export const ProfileScreen = ({
   const fullName = user ? `${user.firstName} ${user.lastName}` : 'Profile';
 
   return (
-    <Screen safeTop>
-      <AppText variant="title" style={styles.title}>
-        Profile
-      </AppText>
-
-      <View style={styles.identity}>
-        <View style={styles.avatar}>
-          {user?.image ? (
-            <Image
-              source={{ uri: user.image }}
-              style={styles.avatarImage}
-              accessibilityIgnoresInvertColors
-              accessibilityLabel={`${fullName} profile picture`}
-            />
-          ) : (
-            <Feather
-              name="user"
-              size={theme.iconSize.xl}
-              color={theme.colors.primary}
-            />
-          )}
+    <Screen style={styles.screen}>
+      <AppText variant="title" style={styles.title}>Profile</AppText>
+      <View style={styles.body}>
+        <View style={styles.identity}>
+          <View style={styles.avatar}>
+            {user?.image ? (
+              <Image
+                source={{ uri: user.image }}
+                style={styles.avatarImage}
+                accessibilityIgnoresInvertColors
+                accessibilityLabel={`${fullName} profile picture`}
+              />
+            ) : (
+              <Feather
+                name="user"
+                size={theme.iconSize.xl}
+                color={theme.colors.primary}
+              />
+            )}
+          </View>
+          <AppText variant="heading" style={styles.name}>
+            {fullName}
+          </AppText>
+          {user ? <AppText muted>@{user.username}</AppText> : null}
         </View>
-        <AppText variant="heading" style={styles.name}>
-          {fullName}
-        </AppText>
-        {user ? <AppText muted>@{user.username}</AppText> : null}
-      </View>
 
-      <View style={styles.card}>
-        <Row
-          icon="moon"
-          label="Dark Mode"
-          trailing={
-            <Switch
-              accessibilityLabel="Dark mode"
-              value={theme.isDark}
-              onValueChange={isDark => {
-                dispatch(themeModeSet(isDark ? 'dark' : 'light'));
-              }}
-              trackColor={{
-                false: theme.colors.border,
-                true: theme.colors.primary,
-              }}
-              thumbColor={theme.colors.textOnPrimary}
-            />
-          }
-        />
-        <View style={styles.divider} />
-        <Row
-          icon="database"
-          label="Saved Data"
-          onPress={() => navigation.navigate(ROUTES.FavouritesTab)}
-          trailing={
-            <>
-              <AppText variant="caption" muted>
-                {savedCount} saved
-              </AppText>
-              {chevron}
-            </>
-          }
-        />
-        <View style={styles.divider} />
-        <Row
-          icon="info"
-          label="About Passport"
-          onPress={() =>
-            Alert.alert(
-              'About Passport',
-              'Explore the world’s countries, build a travel wishlist and share any country with a link.',
-            )
-          }
-          trailing={chevron}
-        />
-      </View>
+        <View style={styles.card}>
+          <Row
+            icon="moon"
+            label="Dark Mode"
+            trailing={
+              <Switch
+                accessibilityLabel="Dark mode"
+                value={theme.isDark}
+                onValueChange={isDark => {
+                  dispatch(themeModeSet(isDark ? 'dark' : 'light'));
+                }}
+                trackColor={{
+                  false: theme.colors.border,
+                  true: theme.colors.primary,
+                }}
+                thumbColor={theme.colors.textOnPrimary}
+              />
+            }
+          />
+          <View style={styles.divider} />
+          <Row
+            icon="database"
+            label="Saved Data"
+            onPress={() => navigation.navigate(ROUTES.FavouritesTab)}
+            trailing={
+              <>
+                <AppText variant="caption" muted>
+                  {savedCount} saved
+                </AppText>
+                {chevron}
+              </>
+            }
+          />
+          <View style={styles.divider} />
+          <Row
+            icon="info"
+            label="About Passport"
+            onPress={() =>
+              Alert.alert(
+                'About Passport',
+                'Explore the world’s countries, build a travel wishlist and share any country with a link.',
+              )
+            }
+            trailing={chevron}
+          />
+        </View>
 
-      <View style={styles.logout}>
-        <Button
-          variant="danger"
-          icon="log-out"
-          title="Logout"
-          onPress={() => dispatch(signOut())}
-        />
+        <View style={styles.logout}>
+          <Button
+            variant="danger"
+            icon="log-out"
+            title="Logout"
+            onPress={() => dispatch(signOut())}
+          />
+        </View>
       </View>
     </Screen>
   );

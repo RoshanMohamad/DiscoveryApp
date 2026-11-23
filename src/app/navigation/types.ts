@@ -20,14 +20,19 @@ export type HomeStackParamList = {
 };
 
 export type AppTabParamList = {
-  [ROUTES.HomeTab]: NavigatorScreenParams<HomeStackParamList>;
+  [ROUTES.HomeTab]: undefined;
   [ROUTES.FavouritesTab]: undefined;
   [ROUTES.ProfileTab]: undefined;
 };
 
+export type AppStackParamList = {
+  [ROUTES.Tabs]: NavigatorScreenParams<AppTabParamList>;
+  [ROUTES.CountryDetails]: { code: string };
+};
+
 export type RootStackParamList = {
   [ROUTES.Auth]: NavigatorScreenParams<AuthStackParamList>;
-  [ROUTES.App]: NavigatorScreenParams<AppTabParamList>;
+  [ROUTES.App]: NavigatorScreenParams<AppStackParamList>;
 };
 
 export type AuthScreenProps<T extends keyof AuthStackParamList> =

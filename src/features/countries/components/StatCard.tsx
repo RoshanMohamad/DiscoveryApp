@@ -12,13 +12,14 @@ const makeStyles = (theme: Theme) =>
     card: {
       flex: 1,
       alignItems: 'center',
-      padding: theme.spacing.md,
+      paddingVertical: theme.spacing.sm + theme.spacing.xs,
+      paddingHorizontal: theme.spacing.xs,
       borderRadius: theme.radius.md,
       borderWidth: 1,
-      borderColor: theme.colors.border,
-      backgroundColor: theme.colors.surface,
+      borderColor: theme.colors.glassBorder,
+      backgroundColor: theme.colors.glass,
     },
-    value: { marginTop: theme.spacing.sm, textAlign: 'center' },
+    value: { marginTop: theme.spacing.xs, textAlign: 'center', fontSize: 13, lineHeight: 18 },
   });
 
 /** One of the three headline numbers under the country title. */

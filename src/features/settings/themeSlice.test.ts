@@ -6,8 +6,8 @@ import {
 import { themeModeSet, themeReducer } from './themeSlice';
 
 describe('themeSlice', () => {
-  it('follows the system until the user chooses', () => {
-    expect(themeReducer(undefined, { type: 'init' }).mode).toBe('system');
+  it('starts in dark mode until the user chooses', () => {
+    expect(themeReducer(undefined, { type: 'init' }).mode).toBe('dark');
   });
 
   it('stores the chosen mode', () => {

@@ -1,11 +1,11 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
-/** `system` = follow the phone until the user picks a side with the toggle. */
+/** `system` follows the phone. The app starts in `dark` to match the design mock-ups until the user picks a side. */
 export type ThemeMode = 'system' | 'light' | 'dark';
 
 export type ThemeState = { mode: ThemeMode };
 
-const initialState: ThemeState = { mode: 'system' };
+const initialState: ThemeState = { mode: 'dark' };
 
 const themeSlice = createSlice({
   name: 'theme',

@@ -2,9 +2,9 @@ import React, { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { ROUTES } from '../../../app/navigation/routes';
 import type { AuthScreenProps } from '../../../app/navigation/types';
+import { images } from '../../../assets/images';
 import { Banner } from '../../../shared/components/Banner';
-import { Button } from '../../../shared/components/Button';
-import { Screen } from '../../../shared/components/Screen';
+import { HeroBackground } from '../../../shared/components/HeroBackground';
 import { getErrorMessage } from '../../../shared/utils/errors';
 import { useTheme, type Theme } from '../../../theme';
 import { useRegisterMutation } from '../authApi';
@@ -14,12 +14,11 @@ import type { RegisterValues } from '../schemas';
 
 const makeStyles = (theme: Theme) =>
   StyleSheet.create({
-    screen: { padding: 0 },
+    background: { flex: 1 },
     content: {
       paddingHorizontal: theme.spacing.lg,
       paddingBottom: theme.spacing.xl,
     },
-    footer: { marginTop: theme.spacing.lg },
   });
 
 export const RegisterScreen = ({
@@ -45,7 +44,7 @@ export const RegisterScreen = ({
   };
 
   return (
-    <Screen style={styles.screen}>
+    <HeroBackground source={images.night} scrim style={styles.background}>
       <ScrollView
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
@@ -58,15 +57,8 @@ export const RegisterScreen = ({
         <View style={styles.content}>
           {error ? <Banner kind="error" message={error} /> : null}
           <RegisterForm onSubmit={handleRegister} />
-          <View style={styles.footer}>
-            <Button
-              variant="secondary"
-              title="I already have an account"
-              onPress={() => navigation.goBack()}
-            />
-          </View>
         </View>
       </ScrollView>
-    </Screen>
+    </HeroBackground>
   );
 };

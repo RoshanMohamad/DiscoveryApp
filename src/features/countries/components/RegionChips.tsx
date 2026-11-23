@@ -20,10 +20,10 @@ const makeStyles = (theme: Theme) =>
       paddingVertical: theme.spacing.sm,
     },
     chip: {
-      minWidth: theme.minTouchSize + theme.spacing.lg,
-      minHeight: theme.minTouchSize + theme.spacing.lg,
+      minWidth: theme.minTouchSize + theme.spacing.md,
+      minHeight: theme.minTouchSize + theme.spacing.md,
       marginRight: theme.spacing.sm,
-      paddingHorizontal: theme.spacing.md,
+      paddingHorizontal: theme.spacing.sm,
       borderRadius: theme.radius.md,
       borderWidth: 1,
       alignItems: 'center',
@@ -60,10 +60,10 @@ export const RegionChips = ({ regions, selected, onSelect }: Props) => {
               {
                 backgroundColor: isSelected
                   ? theme.colors.primary
-                  : theme.colors.surface,
+                  : theme.colors.glass,
                 borderColor: isSelected
                   ? theme.colors.primary
-                  : theme.colors.border,
+                  : theme.colors.glassBorder,
               },
             ]}
           >

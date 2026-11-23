@@ -3,6 +3,7 @@ import { ActivityIndicator, Pressable, StyleSheet } from 'react-native';
 import Feather from '@react-native-vector-icons/feather';
 import LinearGradient from 'react-native-linear-gradient';
 import { useTheme, type Theme } from '../../theme';
+import { withAlpha } from '../../theme/colors';
 import { AppText } from './AppText';
 import type { IconName } from './icons';
 
@@ -30,7 +31,14 @@ const makeStyles = (theme: Theme) =>
       gap: theme.spacing.sm,
     },
     // Primary buttons draw a gradient behind the label (see below).
-    primary: { overflow: 'hidden' },
+    primary: {
+      overflow: 'hidden',
+      shadowColor: theme.colors.primary,
+      shadowOpacity: 0.45,
+      shadowRadius: 12,
+      shadowOffset: { width: 0, height: 4 },
+      elevation: 6,
+    },
     gradient: StyleSheet.absoluteFill,
     secondary: {
       backgroundColor: 'transparent',
@@ -38,7 +46,7 @@ const makeStyles = (theme: Theme) =>
       borderColor: theme.colors.border,
     },
     danger: {
-      backgroundColor: 'transparent',
+      backgroundColor: withAlpha(theme.colors.danger, 0.14),
       borderWidth: 1,
       borderColor: theme.colors.danger,
     },

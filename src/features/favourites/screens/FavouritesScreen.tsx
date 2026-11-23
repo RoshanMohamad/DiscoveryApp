@@ -2,8 +2,10 @@ import React, { useCallback, useMemo } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import Feather from '@react-native-vector-icons/feather';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { images } from '../../../assets/images';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useAppSelector } from '../../../app/hooks';
+import { images } from '../../../assets/images';
 import { ROUTES } from '../../../app/navigation/routes';
 import type { AppTabScreenProps } from '../../../app/navigation/types';
 import { AppText } from '../../../shared/components/AppText';
@@ -17,8 +19,9 @@ import { spacing, useTheme } from '../../../theme';
 import { CountryCard } from '../../countries/components/CountryCard';
 import { useGetCountriesQuery } from '../../countries/countriesApi';
 import { selectFavouriteCodes } from '../selectors';
+import type { AppStackParamList } from '../../../app/navigation/types';
 
-const HERO_HEIGHT = 190;
+const HERO_HEIGHT = 220;
 
 const styles = StyleSheet.create({
   titleRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
@@ -30,7 +33,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
     paddingBottom: spacing.md,
   },
-  body: { flex: 1, paddingHorizontal: spacing.lg },
+  body: {
+    flex: 1,
+    marginTop: -spacing.sm,
+    paddingHorizontal: spacing.lg,
+  },
   count: { marginTop: spacing.xs },
   list: { paddingBottom: spacing.lg },
   separator: { height: spacing.md },
@@ -40,8 +47,8 @@ const Separator = () => <View style={styles.separator} />;
 
 /** The travel wishlist. Reads the already-cached list, so no extra requests. */
 export const FavouritesScreen = ({
-  navigation,
 }: AppTabScreenProps<typeof ROUTES.FavouritesTab>) => {
+  const navigation = useNavigation<NativeStackNavigationProp<AppStackParamList>>();
   const theme = useTheme();
   const insets = useSafeAreaInsets();
   const codes = useAppSelector(selectFavouriteCodes);
@@ -56,11 +63,7 @@ export const FavouritesScreen = ({
 
   const openCountry = useCallback(
     (code: string) =>
-      navigation.navigate(ROUTES.HomeTab, {
-        screen: ROUTES.CountryDetails,
-        params: { code },
-        initial: false,
-      }),
+      navigation.navigate(ROUTES.CountryDetails, { code }),
     [navigation],
   );
 
@@ -92,7 +95,7 @@ export const FavouritesScreen = ({
         message="Tap the heart on any country to save it here."
         actionLabel="Explore countries"
         onAction={() =>
-          navigation.navigate(ROUTES.HomeTab, { screen: ROUTES.Home })
+          navigation.navigate(ROUTES.Tabs, { screen: ROUTES.HomeTab })
         }
       />
     );

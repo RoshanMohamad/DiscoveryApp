@@ -13,19 +13,19 @@ type Props = {
   onPress: (code: string) => void;
 };
 
-const FLAG_WIDTH = 72;
-const FLAG_HEIGHT = 56;
+const FLAG_WIDTH = 60;
+const FLAG_HEIGHT = 42;
 
 const makeStyles = (theme: Theme) =>
   StyleSheet.create({
     card: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: theme.colors.surface,
-      borderColor: theme.colors.border,
+      backgroundColor: theme.colors.glass,
+      borderColor: theme.colors.glassBorder,
       borderWidth: 1,
       borderRadius: theme.radius.md,
-      padding: theme.spacing.md,
+      padding: theme.spacing.sm + theme.spacing.xs,
     },
     press: {
       flex: 1,
@@ -39,11 +39,12 @@ const makeStyles = (theme: Theme) =>
       borderRadius: theme.radius.sm,
       backgroundColor: theme.colors.surfaceAlt,
     },
-    body: { flex: 1, marginHorizontal: theme.spacing.md },
+    body: { flex: 1, marginHorizontal: theme.spacing.sm + theme.spacing.xs },
+    name: { fontSize: 16, lineHeight: 22 },
     line: {
       flexDirection: 'row',
       alignItems: 'center',
-      marginTop: theme.spacing.xs,
+      marginTop: 2,
     },
     meta: {
       flexDirection: 'row',
@@ -106,7 +107,7 @@ const CountryCardBase = ({ country, onPress }: Props) => {
           <View style={styles.flag} />
         )}
         <View style={styles.body}>
-          <AppText variant="heading" numberOfLines={1}>
+          <AppText variant="label" style={styles.name} numberOfLines={1}>
             {country.name}
           </AppText>
           <View style={styles.line}>

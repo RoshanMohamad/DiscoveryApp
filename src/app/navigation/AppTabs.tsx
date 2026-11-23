@@ -70,8 +70,19 @@ export const AppTabs = () => {
         tabBarInactiveTintColor: theme.colors.textMuted,
         tabBarIcon: TAB_BAR_ICONS[route.name],
         tabBarStyle: {
-          backgroundColor: theme.colors.surface,
-          borderTopColor: theme.colors.border,
+          backgroundColor: theme.colors.sheet,
+          borderColor: theme.colors.glassBorder,
+          borderTopWidth: 1,
+          borderTopLeftRadius: radius.lg,
+          borderTopRightRadius: radius.lg,
+          height: 68,
+          paddingTop: spacing.xs,
+          paddingBottom: spacing.sm,
+          display: 'flex',
+        },
+        tabBarLabelStyle: {
+          fontSize: 11,
+          fontWeight: '600',
         },
       })}
     >

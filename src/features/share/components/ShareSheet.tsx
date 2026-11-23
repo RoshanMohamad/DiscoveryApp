@@ -6,6 +6,7 @@ import { AppText } from '../../../shared/components/AppText';
 import { CircleButton } from '../../../shared/components/CircleButton';
 import type { IconName } from '../../../shared/components/icons';
 import { useTheme, type Theme } from '../../../theme';
+import { withAlpha } from '../../../theme/colors';
 import { buildCountryLink } from '../deepLink';
 import {
   buildShareMessage,
@@ -43,7 +44,7 @@ const TARGETS: readonly Target[] = [
     color: '#229ED9',
     url: m => `tg://msg?text=${encodeURIComponent(m)}`,
   },
-  { label: 'More', icon: 'more-horizontal', color: '#6B6F8D', url: null },
+  { label: 'More', icon: 'more-horizontal', color: '#A8A6D6', url: null },
 ];
 
 const COPIED_MS = 1500;
@@ -61,7 +62,9 @@ const makeStyles = (theme: Theme) =>
       paddingBottom: theme.spacing.xl,
       borderTopLeftRadius: theme.radius.lg,
       borderTopRightRadius: theme.radius.lg,
-      backgroundColor: theme.colors.surface,
+      backgroundColor: theme.colors.sheet,
+      borderTopWidth: 1,
+      borderColor: theme.colors.glassBorder,
     },
     header: {
       flexDirection: 'row',
@@ -76,8 +79,8 @@ const makeStyles = (theme: Theme) =>
       paddingLeft: theme.spacing.md,
       borderRadius: theme.radius.md,
       borderWidth: 1,
-      borderColor: theme.colors.border,
-      backgroundColor: theme.colors.background,
+      borderColor: theme.colors.glassBorder,
+      backgroundColor: theme.colors.glass,
       gap: theme.spacing.sm,
     },
     link: { flex: 1 },
@@ -100,7 +103,8 @@ const makeStyles = (theme: Theme) =>
     disc: {
       width: TARGET_SIZE,
       height: TARGET_SIZE,
-      borderRadius: theme.radius.pill,
+      borderRadius: theme.radius.lg,
+      borderWidth: 1,
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -198,11 +202,19 @@ export const ShareSheet = ({ visible, onClose, input }: Props) => {
                 onPress={() => openTarget(target)}
                 style={styles.target}
               >
-                <View style={[styles.disc, { backgroundColor: target.color }]}>
+                <View
+                  style={[
+                    styles.disc,
+                    {
+                      backgroundColor: withAlpha(target.color, 0.18),
+                      borderColor: withAlpha(target.color, 0.5),
+                    },
+                  ]}
+                >
                   <Feather
                     name={target.icon}
                     size={theme.iconSize.lg}
-                    color={theme.colors.textOnPrimary}
+                    color={target.color}
                   />
                 </View>
                 <AppText variant="caption" muted>
