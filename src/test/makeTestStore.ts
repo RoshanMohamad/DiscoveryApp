@@ -1,7 +1,7 @@
 /* eslint-env jest */
 import { configureStore } from '@reduxjs/toolkit';
 import { api } from '../app/api';
-import { rootReducer } from '../app/store';
+import { rootReducer } from '../app/rootReducer';
 
 const buildStore = () =>
   configureStore({
@@ -21,6 +21,9 @@ export const makeTestStore = (): TestStore => {
 };
 
 // RTK Query schedules cache-removal timers; reset them so Jest can exit cleanly.
-afterEach(() => {
+// RTK's batching also queues a requestAnimationFrame (a setTimeout(0) in the RN
+// Jest preset), so wait one macrotask for it to run before the environment is torn down.
+afterEach(async () => {
   created.splice(0).forEach(store => store.dispatch(api.util.resetApiState()));
+  await new Promise<void>(resolve => setTimeout(resolve, 0));
 });

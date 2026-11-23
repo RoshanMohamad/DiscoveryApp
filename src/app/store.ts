@@ -1,4 +1,4 @@
-import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 import {
   FLUSH,
   PAUSE,
@@ -9,20 +9,9 @@ import {
   REGISTER,
   REHYDRATE,
 } from 'redux-persist';
-import { authReducer } from '../features/auth/authSlice';
-import { favouritesReducer } from '../features/favourites/favouritesSlice';
-import { pendingLinkReducer } from '../features/share/pendingLinkSlice';
-import { themeReducer } from '../features/settings/themeSlice';
 import { api } from './api';
 import { mmkvStorage } from './persistence';
-
-export const rootReducer = combineReducers({
-  auth: authReducer,
-  favourites: favouritesReducer,
-  theme: themeReducer,
-  pendingLink: pendingLinkReducer,
-  [api.reducerPath]: api.reducer,
-});
+import { rootReducer } from './rootReducer';
 
 /**
  * Only favourites + theme survive a restart. Auth is deliberately NOT here
