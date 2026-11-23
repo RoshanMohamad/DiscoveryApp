@@ -22,6 +22,10 @@ export const getErrorMessage = (error: unknown): string => {
   if (isRecord(error.data) && typeof error.data.message === 'string') {
     return error.data.message;
   }
+  // RTK Query CUSTOM_ERROR carries a readable string in `error`.
+  if (error.status === 'CUSTOM_ERROR' && typeof error.error === 'string') {
+    return error.error;
+  }
   if (typeof error.message === 'string') {
     return error.message;
   }

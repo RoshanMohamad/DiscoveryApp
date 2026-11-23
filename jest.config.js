@@ -1,4 +1,6 @@
 module.exports = {
+  // The first render in a file is slow while Babel warms its cache.
+  testTimeout: 30000,
   preset: '@react-native/jest-preset',
   setupFiles: ['<rootDir>/jest.setup.js'],
   // Fonts are native assets; Jest only needs a placeholder value.

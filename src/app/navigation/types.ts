@@ -7,6 +7,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ROUTES } from './routes';
 
 export type AuthStackParamList = {
+  [ROUTES.Onboarding]: undefined;
   /** `registered` shows the "account created" message after sign-up. */
   [ROUTES.Login]: { registered?: boolean } | undefined;
   [ROUTES.Register]: undefined;

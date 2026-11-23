@@ -4,6 +4,7 @@ export const ROUTES = {
   Auth: 'Auth',
   App: 'App',
   // Auth stack
+  Onboarding: 'Onboarding',
   Login: 'Login',
   Register: 'Register',
   // Tabs

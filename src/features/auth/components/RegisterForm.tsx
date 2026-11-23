@@ -3,6 +3,7 @@ import { Controller, useForm, type Path } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { TextInputProps } from 'react-native';
 import { Button } from '../../../shared/components/Button';
+import type { IconName } from '../../../shared/components/icons';
 import { TextField } from '../../../shared/components/TextField';
 import { registerSchema, type RegisterValues } from '../schemas';
 
@@ -13,6 +14,7 @@ type Props = {
 type FieldConfig = {
   name: Path<RegisterValues>;
   label: string;
+  icon: IconName;
   inputProps?: TextInputProps;
 };
 
@@ -21,21 +23,25 @@ const FIELDS: FieldConfig[] = [
   {
     name: 'firstName',
     label: 'First name',
+    icon: 'user',
     inputProps: { textContentType: 'givenName' },
   },
   {
     name: 'lastName',
     label: 'Last name',
+    icon: 'user',
     inputProps: { textContentType: 'familyName' },
   },
   {
     name: 'username',
     label: 'Username',
+    icon: 'at-sign',
     inputProps: { autoCapitalize: 'none', autoCorrect: false },
   },
   {
     name: 'email',
     label: 'Email',
+    icon: 'mail',
     inputProps: {
       autoCapitalize: 'none',
       autoCorrect: false,
@@ -46,11 +52,13 @@ const FIELDS: FieldConfig[] = [
   {
     name: 'password',
     label: 'Password',
+    icon: 'lock',
     inputProps: { secureTextEntry: true, autoCapitalize: 'none' },
   },
   {
     name: 'confirmPassword',
     label: 'Confirm password',
+    icon: 'lock',
     inputProps: { secureTextEntry: true, autoCapitalize: 'none' },
   },
 ];
@@ -74,7 +82,7 @@ export const RegisterForm = ({ onSubmit }: Props) => {
 
   return (
     <>
-      {FIELDS.map(({ name, label, inputProps }) => (
+      {FIELDS.map(({ name, label, icon, inputProps }) => (
         <Controller
           key={name}
           control={control}
@@ -83,6 +91,7 @@ export const RegisterForm = ({ onSubmit }: Props) => {
             <TextField
               {...inputProps}
               label={label}
+              icon={icon}
               value={value}
               onChangeText={onChange}
               onBlur={onBlur}
@@ -92,7 +101,7 @@ export const RegisterForm = ({ onSubmit }: Props) => {
         />
       ))}
       <Button
-        title="Create account"
+        title="Create Account"
         loading={isSubmitting}
         onPress={handleSubmit(onSubmit)}
       />

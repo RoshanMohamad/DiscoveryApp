@@ -1,0 +1,38 @@
+# Deep link while logged in, then while logged out.
+# Needs a real REST_COUNTRIES_API_KEY in .env so the country can load.
+appId: com.passport
+---
+# 1) Logged in: the link opens that country's Details directly.
+- launchApp:
+    clearState: true
+- tapOn: "Get Started"
+- tapOn: "Skip"
+- tapOn: "Username"
+- inputText: "emilys"
+- tapOn: "Password"
+- inputText: "emilyspass"
+- hideKeyboard
+- tapOn: "Sign In"
+- assertVisible: "Hello, Emily.*"
+- openLink: "passport://country/LKA"
+- assertVisible: "Sri Lanka"
+- assertVisible: "Share Sri Lanka"
+
+# 2) Unknown code: friendly message, no crash.
+- openLink: "passport://country/ZZZ"
+- assertVisible: "Country not found"
+
+# 3) Logged out: the link is remembered and opened after login.
+- launchApp:
+    clearState: true
+- openLink: "passport://country/LKA"
+- tapOn: "Get Started"
+- tapOn: "Skip"
+- assertVisible: "Welcome Back.*"
+- tapOn: "Username"
+- inputText: "emilys"
+- tapOn: "Password"
+- inputText: "emilyspass"
+- hideKeyboard
+- tapOn: "Sign In"
+- assertVisible: "Sri Lanka"
