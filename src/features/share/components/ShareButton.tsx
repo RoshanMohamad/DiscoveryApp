@@ -1,40 +1,22 @@
-import React from 'react';
-import { Alert, Pressable, StyleSheet } from 'react-native';
-import Feather from '@react-native-vector-icons/feather';
-import { spacing, useTheme } from '../../../theme';
-import { shareCountry, type ShareInput } from '../shareCountry';
+import React, { useState } from 'react';
+import { CircleButton } from '../../../shared/components/CircleButton';
+import type { ShareInput } from '../shareCountry';
+import { ShareSheet } from './ShareSheet';
 
-const styles = StyleSheet.create({
-  button: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: spacing.sm,
-  },
-});
+type Props = ShareInput & { tone?: 'overlay' | 'plain' };
 
-/** Header action on the Details screen. */
-export const ShareButton = (input: ShareInput) => {
-  const theme = useTheme();
-
-  const handlePress = async () => {
-    const outcome = await shareCountry(input);
-    if (outcome === 'failed') {
-      Alert.alert('Could not share', 'Something went wrong. Please try again.');
-    }
-  };
-
+/** Share action on the Details screen: opens the in-app share sheet. */
+export const ShareButton = ({ tone = 'overlay', ...input }: Props) => {
+  const [open, setOpen] = useState(false);
   return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={`Share ${input.name}`}
-      hitSlop={spacing.sm}
-      onPress={handlePress}
-      style={[
-        styles.button,
-        { minWidth: theme.minTouchSize, minHeight: theme.minTouchSize },
-      ]}
-    >
-      <Feather name="share-2" size={22} color={theme.colors.primary} />
-    </Pressable>
+    <>
+      <CircleButton
+        icon="share-2"
+        label={`Share ${input.name}`}
+        tone={tone}
+        onPress={() => setOpen(true)}
+      />
+      <ShareSheet visible={open} onClose={() => setOpen(false)} input={input} />
+    </>
   );
 };

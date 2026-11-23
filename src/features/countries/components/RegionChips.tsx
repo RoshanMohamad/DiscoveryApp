@@ -13,7 +13,8 @@ type Props = {
 
 const makeStyles = (theme: Theme) =>
   StyleSheet.create({
-    scroller: { flexGrow: 0 },
+    // RN ScrollViews shrink by default, which would clip the chips' labels.
+    scroller: { flexGrow: 0, flexShrink: 0 },
     row: {
       paddingHorizontal: theme.spacing.lg,
       paddingVertical: theme.spacing.sm,

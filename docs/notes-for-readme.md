@@ -33,3 +33,10 @@
 - Register keeps First/Last name (DummyJSON needs them; names are required by the brief) although the mock-up omits them.
 - Login button is now "Sign In" and the title "Welcome Back"; Maestro flows were updated (they also skip onboarding after `clearState`).
 - The "About" text on Details is built from API fields in `describe.ts` (the API has no description).
+
+## Round 2 of the redesign: libraries and photos (Roshan allowed third-party libraries on request)
+- Added (approved by Roshan, beyond CLAUDE.md section 2): `react-native-linear-gradient` (button + photo fades), `react-native-svg` (Google "G" logo, filled heart), `@react-native-clipboard/clipboard` (Copy link in the share sheet). All three are native, so the app needs a rebuild (`gradlew app:installDebug`), not just a Metro reload.
+- Photos are free Unsplash images (Unsplash licence: free to use) bundled in `src/assets/images/`, registered once in `index.ts`. IDs: photo-1506905925346-21bda4d32df4 (welcome), photo-1519681393784-d120267933ba (headers), photo-1570077188670-e3a8d69ac5ff, photo-1501785888041-af3ef285b470, photo-1464822759023-fed622ff2c3b (slides / Details hero).
+- Details hero uses one scenic photo for every country (the API has no per-country photos); the country's own flag is shown on it.
+- Share: the in-app sheet shows the deep link with Copy and WhatsApp / Messages / Telegram targets (deep links into those apps) and "More" = the native `Share.share` sheet. If an app is not installed it falls back to `Share.share`, so the spec requirement still holds.
+- Tab bar active tab is a rounded pill (`tabBarActiveBackgroundColor`).

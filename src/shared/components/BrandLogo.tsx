@@ -7,6 +7,8 @@ import { AppText } from './AppText';
 type Props = {
   /** `large` for the auth/onboarding screens, `small` for headers. */
   size?: 'large' | 'small';
+  /** `onImage` = white, for use on top of photos in either theme. */
+  tone?: 'default' | 'onImage';
 };
 
 const styles = StyleSheet.create({
@@ -17,9 +19,10 @@ const styles = StyleSheet.create({
 });
 
 /** The Passport wordmark: a paper-plane glyph and the app name. */
-export const BrandLogo = ({ size = 'small' }: Props) => {
+export const BrandLogo = ({ size = 'small', tone = 'default' }: Props) => {
   const theme = useTheme();
   const isLarge = size === 'large';
+  const onImage = tone === 'onImage';
   return (
     <View
       style={isLarge ? styles.column : styles.row}
@@ -29,11 +32,14 @@ export const BrandLogo = ({ size = 'small' }: Props) => {
       <Feather
         name="send"
         size={isLarge ? theme.iconSize.xl : theme.iconSize.md}
-        color={theme.colors.primary}
+        color={onImage ? theme.colors.textOnPrimary : theme.colors.primary}
       />
       <AppText
         variant={isLarge ? 'title' : 'heading'}
-        style={isLarge ? styles.nameStacked : styles.nameInline}
+        style={[
+          isLarge ? styles.nameStacked : styles.nameInline,
+          onImage && { color: theme.colors.textOnPrimary },
+        ]}
       >
         Passport
       </AppText>

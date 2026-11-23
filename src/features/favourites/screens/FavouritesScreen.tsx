@@ -1,11 +1,14 @@
 import React, { useCallback, useMemo } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import Feather from '@react-native-vector-icons/feather';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { images } from '../../../assets/images';
 import { useAppSelector } from '../../../app/hooks';
 import { ROUTES } from '../../../app/navigation/routes';
 import type { AppTabScreenProps } from '../../../app/navigation/types';
 import { AppText } from '../../../shared/components/AppText';
 import { EmptyView } from '../../../shared/components/EmptyView';
+import { HeroBackground } from '../../../shared/components/HeroBackground';
 import { ErrorView } from '../../../shared/components/ErrorView';
 import { LoadingView } from '../../../shared/components/LoadingView';
 import { Screen } from '../../../shared/components/Screen';
@@ -15,9 +18,19 @@ import { CountryCard } from '../../countries/components/CountryCard';
 import { useGetCountriesQuery } from '../../countries/countriesApi';
 import { selectFavouriteCodes } from '../selectors';
 
+const HERO_HEIGHT = 190;
+
 const styles = StyleSheet.create({
   titleRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
-  header: { marginBottom: spacing.lg },
+  screen: { padding: 0 },
+  hero: { height: HERO_HEIGHT },
+  header: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    paddingHorizontal: spacing.lg,
+    paddingBottom: spacing.md,
+  },
+  body: { flex: 1, paddingHorizontal: spacing.lg },
   count: { marginTop: spacing.xs },
   list: { paddingBottom: spacing.lg },
   separator: { height: spacing.md },
@@ -30,6 +43,7 @@ export const FavouritesScreen = ({
   navigation,
 }: AppTabScreenProps<typeof ROUTES.FavouritesTab>) => {
   const theme = useTheme();
+  const insets = useSafeAreaInsets();
   const codes = useAppSelector(selectFavouriteCodes);
   const { data, isLoading, error, refetch } = useGetCountriesQuery(undefined, {
     skip: codes.length === 0,
@@ -51,20 +65,22 @@ export const FavouritesScreen = ({
   );
 
   const header = (
-    <View style={styles.header}>
-      <View style={styles.titleRow}>
-        <Feather
-          name="heart"
-          size={theme.iconSize.lg}
-          color={theme.colors.favourite}
-        />
-        <AppText variant="title">Favourites</AppText>
+    <HeroBackground source={images.night} scrim fade style={styles.hero}>
+      <View style={[styles.header, { paddingTop: insets.top + spacing.md }]}>
+        <View style={styles.titleRow}>
+          <Feather
+            name="heart"
+            size={theme.iconSize.lg}
+            color={theme.colors.favourite}
+          />
+          <AppText variant="title">Favourites</AppText>
+        </View>
+        <AppText muted>Your travel wishlist</AppText>
+        <AppText variant="caption" muted style={styles.count}>
+          {codes.length} {codes.length === 1 ? 'country' : 'countries'}
+        </AppText>
       </View>
-      <AppText muted>Your travel wishlist</AppText>
-      <AppText variant="caption" muted style={styles.count}>
-        {codes.length} {codes.length === 1 ? 'country' : 'countries'}
-      </AppText>
-    </View>
+    </HeroBackground>
   );
 
   let body: React.ReactNode;
@@ -99,9 +115,9 @@ export const FavouritesScreen = ({
   }
 
   return (
-    <Screen safeTop>
+    <Screen style={styles.screen}>
       {header}
-      {body}
+      <View style={styles.body}>{body}</View>
     </Screen>
   );
 };

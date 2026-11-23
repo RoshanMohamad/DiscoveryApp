@@ -113,7 +113,9 @@ const CountryCardBase = ({ country, onPress }: Props) => {
             <Meta icon="map-pin" text={country.region} />
           </View>
           <View style={styles.line}>
-            {country.capital ? <Meta icon="star" text={country.capital} /> : null}
+            {country.capital ? (
+              <Meta icon="star" text={country.capital} />
+            ) : null}
             {population !== null ? (
               <Meta icon="users" text={population} gap />
             ) : null}

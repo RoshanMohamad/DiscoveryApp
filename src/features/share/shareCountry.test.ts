@@ -21,12 +21,10 @@ describe('shareCountry', () => {
   afterEach(() => jest.restoreAllMocks());
 
   it('reports "shared" when the user completes the share', async () => {
-    const spy = jest
-      .spyOn(Share, 'share')
-      .mockResolvedValue({
-        action: Share.sharedAction,
-        activityType: undefined,
-      });
+    const spy = jest.spyOn(Share, 'share').mockResolvedValue({
+      action: Share.sharedAction,
+      activityType: undefined,
+    });
     await expect(shareCountry(lka)).resolves.toBe('shared');
     expect(spy).toHaveBeenCalledWith({
       message: expect.stringContaining('passport://country/LKA'),
@@ -34,12 +32,10 @@ describe('shareCountry', () => {
   });
 
   it('treats closing the sheet as "dismissed", not an error', async () => {
-    jest
-      .spyOn(Share, 'share')
-      .mockResolvedValue({
-        action: Share.dismissedAction,
-        activityType: undefined,
-      });
+    jest.spyOn(Share, 'share').mockResolvedValue({
+      action: Share.dismissedAction,
+      activityType: undefined,
+    });
     await expect(shareCountry(lka)).resolves.toBe('dismissed');
   });
 

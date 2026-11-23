@@ -1,5 +1,12 @@
 import React, { useMemo } from 'react';
-import { Alert, Image, Pressable, StyleSheet, Switch, View } from 'react-native';
+import {
+  Alert,
+  Image,
+  Pressable,
+  StyleSheet,
+  Switch,
+  View,
+} from 'react-native';
 import Feather from '@react-native-vector-icons/feather';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { ROUTES } from '../../../app/navigation/routes';
@@ -156,6 +163,7 @@ export const ProfileScreen = ({
                 false: theme.colors.border,
                 true: theme.colors.primary,
               }}
+              thumbColor={theme.colors.textOnPrimary}
             />
           }
         />

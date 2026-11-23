@@ -7,11 +7,14 @@ import {
   View,
 } from 'react-native';
 import Feather from '@react-native-vector-icons/feather';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppSelector } from '../../../app/hooks';
 import { ROUTES } from '../../../app/navigation/routes';
 import type { HomeStackScreenProps } from '../../../app/navigation/types';
 import { AppText } from '../../../shared/components/AppText';
+import { images } from '../../../assets/images';
 import { BrandLogo } from '../../../shared/components/BrandLogo';
+import { HeroBackground } from '../../../shared/components/HeroBackground';
 import { EmptyView } from '../../../shared/components/EmptyView';
 import { ErrorView } from '../../../shared/components/ErrorView';
 import { LoadingView } from '../../../shared/components/LoadingView';
@@ -29,6 +32,7 @@ import type { Country } from '../types';
 
 /** Two columns from tablet width upwards. */
 const TABLET_BREAKPOINT = 600;
+const HERO_HEIGHT = 230;
 
 const separatorStyles = StyleSheet.create({
   separator: { height: spacing.md },
@@ -39,7 +43,13 @@ const Separator = () => <View style={separatorStyles.separator} />;
 const makeStyles = (theme: Theme) =>
   StyleSheet.create({
     screen: { padding: 0 },
-    header: { paddingHorizontal: theme.spacing.lg, paddingTop: theme.spacing.md },
+    hero: { height: HERO_HEIGHT },
+    header: {
+      flex: 1,
+      justifyContent: 'space-between',
+      paddingHorizontal: theme.spacing.lg,
+      paddingBottom: theme.spacing.sm,
+    },
     topRow: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -52,7 +62,6 @@ const makeStyles = (theme: Theme) =>
       justifyContent: 'center',
       marginRight: -theme.spacing.sm,
     },
-    greeting: { marginTop: theme.spacing.sm },
     searchRow: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -95,6 +104,7 @@ export const HomeScreen = ({
 }: HomeStackScreenProps<typeof ROUTES.Home>) => {
   const theme = useTheme();
   const styles = useMemo(() => makeStyles(theme), [theme]);
+  const insets = useSafeAreaInsets();
   const firstName = useAppSelector(state => state.auth.user?.firstName);
   const { data, isLoading, isFetching, error, refetch } =
     useGetCountriesQuery();
@@ -169,28 +179,34 @@ export const HomeScreen = ({
   }
 
   return (
-    <Screen safeTop style={styles.screen}>
-      <View style={styles.header}>
-        <View style={styles.topRow}>
-          <BrandLogo />
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Notifications"
-            onPress={() => showNotAvailable('Notifications')}
-            style={styles.iconButton}
-          >
-            <Feather
-              name="bell"
-              size={theme.iconSize.lg}
-              color={theme.colors.text}
-            />
-          </Pressable>
+    <Screen style={styles.screen}>
+      <HeroBackground source={images.night} scrim fade style={styles.hero}>
+        <View
+          style={[styles.header, { paddingTop: insets.top + theme.spacing.sm }]}
+        >
+          <View style={styles.topRow}>
+            <BrandLogo tone="onImage" />
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Notifications"
+              onPress={() => showNotAvailable('Notifications')}
+              style={styles.iconButton}
+            >
+              <Feather
+                name="bell"
+                size={theme.iconSize.lg}
+                color={theme.colors.textOnPrimary}
+              />
+            </Pressable>
+          </View>
+          <View>
+            <AppText variant="title">
+              {firstName ? `Hello, ${firstName} 👋` : 'Explore'}
+            </AppText>
+            <AppText muted>Where to next?</AppText>
+          </View>
         </View>
-        <AppText variant="title" style={styles.greeting}>
-          {firstName ? `Hello, ${firstName} 👋` : 'Explore'}
-        </AppText>
-        <AppText muted>Where to next?</AppText>
-      </View>
+      </HeroBackground>
       {data ? (
         <>
           <View style={styles.searchRow}>

@@ -1,9 +1,10 @@
 import React from 'react';
+import { StyleSheet, View } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Feather from '@react-native-vector-icons/feather';
 import { FavouritesScreen } from '../../features/favourites/screens/FavouritesScreen';
 import { ProfileScreen } from '../../features/settings/screens/ProfileScreen';
-import { useTheme } from '../../theme';
+import { radius, spacing, useTheme } from '../../theme';
 import { HomeStack } from './HomeStack';
 import { ROUTES } from './routes';
 import type { AppTabParamList } from './types';
@@ -18,12 +19,38 @@ const TAB_ICONS: Record<keyof AppTabParamList, IconName> = {
   [ROUTES.ProfileTab]: 'user',
 };
 
-type TabIconProps = { color: string; size: number };
+type TabIconProps = { color: string; size: number; focused: boolean };
+
+const styles = StyleSheet.create({
+  // Sits behind the icon and sticks out around it, so the fixed-size icon box
+  // that React Navigation gives us does not clip or move the glyph.
+  pill: {
+    position: 'absolute',
+    top: -spacing.xs,
+    bottom: -spacing.xs,
+    left: -spacing.lg,
+    right: -spacing.lg,
+    borderRadius: radius.pill,
+  },
+});
 
 /** Built once per route at module level, so it is not a new component each render. */
 const makeTabIcon = (routeName: keyof AppTabParamList) =>
-  function TabIcon({ color, size }: TabIconProps) {
-    return <Feather name={TAB_ICONS[routeName]} color={color} size={size} />;
+  function TabIcon({ color, size, focused }: TabIconProps) {
+    const theme = useTheme();
+    return (
+      <View>
+        {focused ? (
+          <View
+            style={[
+              styles.pill,
+              { backgroundColor: theme.colors.primaryMuted },
+            ]}
+          />
+        ) : null}
+        <Feather name={TAB_ICONS[routeName]} color={color} size={size} />
+      </View>
+    );
   };
 
 const TAB_BAR_ICONS = {

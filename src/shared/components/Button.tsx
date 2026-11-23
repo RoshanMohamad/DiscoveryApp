@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet } from 'react-native';
 import Feather from '@react-native-vector-icons/feather';
+import LinearGradient from 'react-native-linear-gradient';
 import { useTheme, type Theme } from '../../theme';
 import { AppText } from './AppText';
 import type { IconName } from './icons';
@@ -13,6 +14,8 @@ type Props = {
   variant?: 'primary' | 'secondary' | 'danger';
   icon?: IconName;
   iconPosition?: 'left' | 'right';
+  /** Custom leading element (e.g. a brand logo) instead of a Feather icon. */
+  leading?: React.ReactNode;
 };
 
 const makeStyles = (theme: Theme) =>
@@ -26,7 +29,9 @@ const makeStyles = (theme: Theme) =>
       flexDirection: 'row',
       gap: theme.spacing.sm,
     },
-    primary: { backgroundColor: theme.colors.primary },
+    // Primary buttons draw a gradient behind the label (see below).
+    primary: { overflow: 'hidden' },
+    gradient: StyleSheet.absoluteFill,
     secondary: {
       backgroundColor: 'transparent',
       borderWidth: 1,
@@ -50,6 +55,7 @@ export const Button = ({
   variant = 'primary',
   icon,
   iconPosition = 'left',
+  leading,
 }: Props) => {
   const theme = useTheme();
   const styles = useMemo(() => makeStyles(theme), [theme]);
@@ -74,10 +80,20 @@ export const Button = ({
         pressed && styles.pressed,
       ]}
     >
+      {variant === 'primary' ? (
+        <LinearGradient
+          colors={[...theme.gradients.primary]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={styles.gradient}
+          pointerEvents="none"
+        />
+      ) : null}
       {loading ? (
         <ActivityIndicator color={textColor} />
       ) : (
         <>
+          {leading ?? null}
           {icon ? (
             <Feather name={icon} size={theme.iconSize.md} color={textColor} />
           ) : null}

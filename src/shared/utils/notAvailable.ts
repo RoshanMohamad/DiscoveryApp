@@ -6,8 +6,5 @@ import { Alert } from 'react-native';
  * instead of silently doing nothing.
  */
 export const showNotAvailable = (feature: string): void => {
-  Alert.alert(
-    'Not available',
-    `${feature} is not part of this demo app.`,
-  );
+  Alert.alert('Not available', `${feature} is not part of this demo app.`);
 };

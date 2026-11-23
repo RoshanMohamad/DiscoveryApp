@@ -17,7 +17,7 @@ export const HomeStack = () => (
     <Stack.Screen
       name={ROUTES.CountryDetails}
       component={CountryDetailsScreen}
-      options={{ title: 'Country' }}
+      options={{ headerShown: false }}
     />
   </Stack.Navigator>
 );

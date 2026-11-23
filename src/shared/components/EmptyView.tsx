@@ -22,8 +22,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: spacing.xl,
   },
-  title: { marginTop: spacing.md, textAlign: 'center' },
-  message: { marginTop: spacing.sm, textAlign: 'center' },
+  // Full width, so centred text wraps inside the screen instead of being clipped.
+  title: { marginTop: spacing.md, textAlign: 'center', alignSelf: 'stretch' },
+  message: { marginTop: spacing.sm, textAlign: 'center', alignSelf: 'stretch' },
   action: { marginTop: spacing.xl, alignSelf: 'stretch' },
 });
 

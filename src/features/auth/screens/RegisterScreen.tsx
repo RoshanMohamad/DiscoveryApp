@@ -1,29 +1,24 @@
 import React, { useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
-import Feather from '@react-native-vector-icons/feather';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { ROUTES } from '../../../app/navigation/routes';
 import type { AuthScreenProps } from '../../../app/navigation/types';
-import { AppText } from '../../../shared/components/AppText';
 import { Banner } from '../../../shared/components/Banner';
 import { Button } from '../../../shared/components/Button';
 import { Screen } from '../../../shared/components/Screen';
 import { getErrorMessage } from '../../../shared/utils/errors';
 import { useTheme, type Theme } from '../../../theme';
 import { useRegisterMutation } from '../authApi';
+import { AuthHero } from '../components/AuthHero';
 import { RegisterForm } from '../components/RegisterForm';
 import type { RegisterValues } from '../schemas';
 
 const makeStyles = (theme: Theme) =>
   StyleSheet.create({
-    content: { paddingBottom: theme.spacing.xl },
-    back: {
-      width: theme.minTouchSize,
-      height: theme.minTouchSize,
-      justifyContent: 'center',
-      marginLeft: -theme.spacing.sm,
+    screen: { padding: 0 },
+    content: {
+      paddingHorizontal: theme.spacing.lg,
+      paddingBottom: theme.spacing.xl,
     },
-    heading: { marginTop: theme.spacing.sm },
-    subtitle: { marginBottom: theme.spacing.xl },
     footer: { marginTop: theme.spacing.lg },
   });
 
@@ -50,37 +45,26 @@ export const RegisterScreen = ({
   };
 
   return (
-    <Screen safeTop>
+    <Screen style={styles.screen}>
       <ScrollView
-        contentContainerStyle={styles.content}
         keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Go back"
-          onPress={() => navigation.goBack()}
-          style={styles.back}
-        >
-          <Feather
-            name="arrow-left"
-            size={theme.iconSize.lg}
-            color={theme.colors.text}
-          />
-        </Pressable>
-        <AppText variant="title" style={styles.heading}>
-          Create Account
-        </AppText>
-        <AppText muted style={styles.subtitle}>
-          It's just a simulation.
-        </AppText>
-        {error ? <Banner kind="error" message={error} /> : null}
-        <RegisterForm onSubmit={handleRegister} />
-        <View style={styles.footer}>
-          <Button
-            variant="secondary"
-            title="I already have an account"
-            onPress={() => navigation.goBack()}
-          />
+        <AuthHero
+          title="Create Account"
+          subtitle="It's just a simulation."
+          onBack={() => navigation.goBack()}
+        />
+        <View style={styles.content}>
+          {error ? <Banner kind="error" message={error} /> : null}
+          <RegisterForm onSubmit={handleRegister} />
+          <View style={styles.footer}>
+            <Button
+              variant="secondary"
+              title="I already have an account"
+              onPress={() => navigation.goBack()}
+            />
+          </View>
         </View>
       </ScrollView>
     </Screen>

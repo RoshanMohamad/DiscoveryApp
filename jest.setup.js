@@ -6,9 +6,26 @@ jest.mock('react-native-config', () => ({
 }));
 
 // Safe-area insets come from native code; the package ships a Jest mock.
-jest.mock('react-native-safe-area-context', () =>
-  require('react-native-safe-area-context/jest/mock').default,
+jest.mock(
+  'react-native-safe-area-context',
+  () => require('react-native-safe-area-context/jest/mock').default,
 );
+
+// Gradients, SVG and the clipboard are native views/modules: render plain Views / no-ops.
+jest.mock('react-native-linear-gradient', () => {
+  const { View } = require('react-native');
+  return { __esModule: true, default: View };
+});
+
+jest.mock('react-native-svg', () => {
+  const { View } = require('react-native');
+  return { __esModule: true, default: View, Svg: View, Path: View };
+});
+
+jest.mock('@react-native-clipboard/clipboard', () => ({
+  __esModule: true,
+  default: { setString: jest.fn() },
+}));
 
 jest.mock('react-native-keychain', () => {
   let stored = false;

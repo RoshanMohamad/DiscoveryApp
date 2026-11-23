@@ -1,47 +1,75 @@
 import React, { useMemo, useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import {
+  Image,
+  Pressable,
+  StyleSheet,
+  View,
+  type ImageSourcePropType,
+} from 'react-native';
 import Feather from '@react-native-vector-icons/feather';
+import LinearGradient from 'react-native-linear-gradient';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { images } from '../../../assets/images';
 import { useAppDispatch } from '../../../app/hooks';
 import { ROUTES } from '../../../app/navigation/routes';
 import type { AuthScreenProps } from '../../../app/navigation/types';
 import { AppText } from '../../../shared/components/AppText';
 import { BrandLogo } from '../../../shared/components/BrandLogo';
 import { Button } from '../../../shared/components/Button';
+import { HeroBackground } from '../../../shared/components/HeroBackground';
 import type { IconName } from '../../../shared/components/icons';
-import { Screen } from '../../../shared/components/Screen';
 import { useTheme, type Theme } from '../../../theme';
+import { withAlpha } from '../../../theme/colors';
 import { onboardingCompleted } from '../onboardingSlice';
 
-type Slide = { icon: IconName; title: string; text: string };
+type Slide = {
+  title: string;
+  text: string;
+  front: ImageSourcePropType;
+  back: ImageSourcePropType;
+  /** Small floating badge on the illustration. */
+  badge: IconName;
+};
 
 /** Page 0 is the welcome hero; these are pages 1..3. */
 const SLIDES: readonly Slide[] = [
   {
-    icon: 'globe',
     title: 'Discover the World',
     text: 'Explore countries, learn key facts, and find your next travel destination.',
+    front: images.santorini,
+    back: images.lake,
+    badge: 'compass',
   },
   {
-    icon: 'heart',
     title: 'Build Your Wishlist',
     text: 'Save your favourite countries and come back anytime.',
+    front: images.valley,
+    back: images.santorini,
+    badge: 'heart',
   },
   {
-    icon: 'send',
     title: 'Share & Explore',
     text: 'Share countries with friends using a simple link and open them directly in the app.',
+    front: images.lake,
+    back: images.valley,
+    badge: 'send',
   },
 ];
 
 const PAGE_COUNT = SLIDES.length + 1;
-const ILLUSTRATION_SIZE = 160;
-const TILT_DEGREES = 8;
+const CARD_WIDTH = 190;
+const CARD_HEIGHT = 230;
+const BADGE_SIZE = 72;
+const TILT_BACK = '-9deg';
+const TILT_FRONT = '5deg';
 
 const makeStyles = (theme: Theme) =>
   StyleSheet.create({
-    screen: { justifyContent: 'space-between' },
+    root: { flex: 1, backgroundColor: theme.colors.background },
+    fill: { flex: 1 },
     top: {
       minHeight: theme.minTouchSize,
+      paddingHorizontal: theme.spacing.lg,
       alignItems: 'flex-end',
       justifyContent: 'center',
     },
@@ -51,37 +79,66 @@ const makeStyles = (theme: Theme) =>
       alignItems: 'center',
       justifyContent: 'center',
     },
-    body: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-    illustration: {
-      width: ILLUSTRATION_SIZE,
-      height: ILLUSTRATION_SIZE,
-      marginBottom: theme.spacing.xxl,
-    },
-    cardBack: {
-      position: 'absolute',
-      width: ILLUSTRATION_SIZE,
-      height: ILLUSTRATION_SIZE,
-      borderRadius: theme.radius.lg,
-      backgroundColor: theme.colors.primaryMuted,
-      transform: [{ rotate: `-${TILT_DEGREES}deg` }],
-    },
-    cardFront: {
-      width: ILLUSTRATION_SIZE,
-      height: ILLUSTRATION_SIZE,
-      borderRadius: theme.radius.lg,
-      backgroundColor: theme.colors.surface,
-      borderWidth: 1,
-      borderColor: theme.colors.border,
+    body: {
+      flex: 1,
       alignItems: 'center',
       justifyContent: 'center',
-      transform: [{ rotate: `${TILT_DEGREES}deg` }],
+      paddingHorizontal: theme.spacing.xl,
     },
-    title: { textAlign: 'center', marginTop: theme.spacing.lg },
+    heroBody: {
+      flex: 1,
+      alignItems: 'center',
+      paddingTop: theme.spacing.xxl * 2,
+      paddingHorizontal: theme.spacing.xl,
+    },
+    illustration: {
+      width: CARD_WIDTH + theme.spacing.xxl * 2,
+      height: CARD_HEIGHT + theme.spacing.xl,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: theme.spacing.xl,
+    },
+    card: {
+      position: 'absolute',
+      width: CARD_WIDTH,
+      height: CARD_HEIGHT,
+      borderRadius: theme.radius.lg,
+      backgroundColor: theme.colors.surfaceAlt,
+    },
+    cardBack: { transform: [{ rotate: TILT_BACK }, { translateX: -22 }] },
+    cardFront: {
+      transform: [{ rotate: TILT_FRONT }, { translateX: 14 }],
+      borderWidth: 2,
+      borderColor: theme.colors.border,
+    },
+    badge: {
+      position: 'absolute',
+      right: 0,
+      bottom: 0,
+      width: BADGE_SIZE,
+      height: BADGE_SIZE,
+      borderRadius: theme.radius.lg,
+      alignItems: 'center',
+      justifyContent: 'center',
+      overflow: 'hidden',
+    },
+    badgeHeart: { backgroundColor: theme.colors.favourite },
+    gradient: StyleSheet.absoluteFill,
+    title: { textAlign: 'center' },
     text: { textAlign: 'center', marginTop: theme.spacing.md },
+    tagline: {
+      textAlign: 'center',
+      marginTop: theme.spacing.md,
+      color: theme.colors.textOnPrimary,
+    },
+    footer: {
+      paddingHorizontal: theme.spacing.lg,
+      paddingBottom: theme.spacing.lg,
+    },
     dots: {
       flexDirection: 'row',
       justifyContent: 'center',
-      marginBottom: theme.spacing.xl,
+      marginBottom: theme.spacing.lg,
     },
     dot: {
       width: theme.spacing.sm,
@@ -90,9 +147,39 @@ const makeStyles = (theme: Theme) =>
       marginHorizontal: theme.spacing.xs,
       backgroundColor: theme.colors.border,
     },
+    dotOnImage: { backgroundColor: withAlpha(theme.colors.textOnPrimary, 0.4) },
     dotActive: { backgroundColor: theme.colors.primary },
-    footer: { paddingBottom: theme.spacing.lg },
+    dotActiveOnImage: { backgroundColor: theme.colors.textOnPrimary },
   });
+
+type Styles = ReturnType<typeof makeStyles>;
+
+const Dots = ({
+  page,
+  styles,
+  onImage,
+}: {
+  page: number;
+  styles: Styles;
+  onImage: boolean;
+}) => (
+  <View
+    style={styles.dots}
+    accessibilityLabel={`Page ${page + 1} of ${PAGE_COUNT}`}
+  >
+    {Array.from({ length: PAGE_COUNT }, (_, index) => (
+      <View
+        key={index}
+        style={[
+          styles.dot,
+          onImage && styles.dotOnImage,
+          index === page &&
+            (onImage ? styles.dotActiveOnImage : styles.dotActive),
+        ]}
+      />
+    ))}
+  </View>
+);
 
 /** Welcome hero followed by three intro slides. Shown once, then remembered. */
 export const OnboardingScreen = ({
@@ -100,6 +187,7 @@ export const OnboardingScreen = ({
 }: AuthScreenProps<typeof ROUTES.Onboarding>) => {
   const theme = useTheme();
   const styles = useMemo(() => makeStyles(theme), [theme]);
+  const insets = useSafeAreaInsets();
   const dispatch = useAppDispatch();
   const [page, setPage] = useState(0);
 
@@ -112,69 +200,106 @@ export const OnboardingScreen = ({
     navigation.replace(ROUTES.Login);
   };
 
-  return (
-    <Screen safeTop style={styles.screen}>
-      <View style={styles.top}>
-        {isHero ? null : (
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Skip"
-            onPress={finish}
-            style={styles.skip}
-          >
-            <AppText variant="label" muted>
-              Skip
+  const button = (
+    <Button
+      title={isLast || isHero ? 'Get Started' : 'Next'}
+      icon={isLast ? 'check' : 'arrow-right'}
+      iconPosition="right"
+      onPress={isLast ? finish : () => setPage(current => current + 1)}
+    />
+  );
+
+  if (!slide) {
+    return (
+      <HeroBackground
+        source={images.welcome}
+        scrim
+        style={styles.fill}
+        accessibilityLabel="Welcome to Passport"
+      >
+        <View style={[styles.fill, { paddingTop: insets.top }]}>
+          <View style={styles.heroBody}>
+            <BrandLogo size="large" tone="onImage" />
+            <AppText style={styles.tagline}>
+              Explore Countries · Save Favourites · Share Destinations
             </AppText>
-          </Pressable>
-        )}
+          </View>
+          <View
+            style={[
+              styles.footer,
+              { paddingBottom: insets.bottom + theme.spacing.lg },
+            ]}
+          >
+            <Dots page={page} styles={styles} onImage />
+            {button}
+          </View>
+        </View>
+      </HeroBackground>
+    );
+  }
+
+  return (
+    <View style={[styles.root, { paddingTop: insets.top }]}>
+      <View style={styles.top}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Skip"
+          onPress={finish}
+          style={styles.skip}
+        >
+          <AppText variant="label" muted>
+            Skip
+          </AppText>
+        </Pressable>
       </View>
 
       <View style={styles.body}>
-        {slide ? (
-          <>
-            <View style={styles.illustration}>
-              <View style={styles.cardBack} />
-              <View style={styles.cardFront}>
-                <Feather
-                  name={slide.icon}
-                  size={theme.iconSize.xl * 2}
-                  color={theme.colors.primary}
-                />
-              </View>
-            </View>
-            <AppText variant="heading" style={styles.title}>
-              {slide.title}
-            </AppText>
-            <AppText muted style={styles.text}>
-              {slide.text}
-            </AppText>
-          </>
-        ) : (
-          <>
-            <BrandLogo size="large" />
-            <AppText muted style={styles.text}>
-              Explore Countries · Save Favourites · Share Destinations
-            </AppText>
-          </>
-        )}
+        <View style={styles.illustration}>
+          <Image
+            source={slide.back}
+            style={[styles.card, styles.cardBack]}
+            accessibilityIgnoresInvertColors
+          />
+          <Image
+            source={slide.front}
+            style={[styles.card, styles.cardFront]}
+            accessibilityIgnoresInvertColors
+          />
+          <View
+            style={[styles.badge, slide.badge === 'heart' && styles.badgeHeart]}
+          >
+            {slide.badge === 'heart' ? null : (
+              <LinearGradient
+                colors={[...theme.gradients.primary]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.gradient}
+              />
+            )}
+            <Feather
+              name={slide.badge}
+              size={theme.iconSize.xl}
+              color={theme.colors.textOnPrimary}
+            />
+          </View>
+        </View>
+        <AppText variant="heading" style={styles.title}>
+          {slide.title}
+        </AppText>
+        <AppText muted style={styles.text}>
+          {slide.text}
+        </AppText>
       </View>
 
-      <View style={styles.footer}>
-        <View style={styles.dots} accessibilityLabel={`Page ${page + 1} of ${PAGE_COUNT}`}>
-          {Array.from({ length: PAGE_COUNT }, (_, index) => (
-            <View
-              key={index}
-              style={[styles.dot, index === page && styles.dotActive]}
-            />
-          ))}
-        </View>
-        <Button
-          title={isHero ? 'Get Started' : isLast ? 'Get Started' : 'Next'}
-          icon={isLast ? 'check' : 'arrow-right'}
-          iconPosition="right"
-          onPress={isLast ? finish : () => setPage(current => current + 1)}
-        />
+      <View
+        style={[
+          styles.footer,
+          { paddingBottom: insets.bottom + theme.spacing.lg },
+        ]}
+      >
+        <Dots page={page} styles={styles} onImage={false} />
+        {button}
       </View>
-    </Screen>
+    </View>
   );
 };

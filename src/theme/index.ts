@@ -2,7 +2,13 @@ import { useMemo } from 'react';
 import { useColorScheme } from 'react-native';
 import { useAppSelector } from '../app/hooks';
 import { selectThemeMode } from '../features/settings/themeSlice';
-import { darkColors, lightColors, type ColorPalette } from './colors';
+import {
+  darkColors,
+  lightColors,
+  primaryGradient,
+  withAlpha,
+  type ColorPalette,
+} from './colors';
 import { iconSize, MIN_TOUCH_SIZE, radius, spacing } from './spacing';
 import { typography, type TypographyVariant } from './typography';
 
@@ -12,19 +18,35 @@ export type Theme = {
   spacing: typeof spacing;
   radius: typeof radius;
   iconSize: typeof iconSize;
+  gradients: {
+    /** Left -> right fill for primary buttons. */
+    primary: readonly [string, string];
+    /** Transparent at the top, solid screen background at the bottom: fades photos into the page. */
+    fadeToBackground: readonly [string, string];
+    /** Light dark-tint over photos so text on top stays readable. */
+    scrim: readonly [string, string];
+  };
   typography: typeof typography;
   minTouchSize: number;
 };
 
-export const buildTheme = (isDark: boolean): Theme => ({
-  isDark,
-  colors: isDark ? darkColors : lightColors,
-  spacing,
-  radius,
-  iconSize,
-  typography,
-  minTouchSize: MIN_TOUCH_SIZE,
-});
+export const buildTheme = (isDark: boolean): Theme => {
+  const colors = isDark ? darkColors : lightColors;
+  return {
+    isDark,
+    colors,
+    spacing,
+    radius,
+    iconSize,
+    typography,
+    minTouchSize: MIN_TOUCH_SIZE,
+    gradients: {
+      primary: isDark ? primaryGradient.dark : primaryGradient.light,
+      fadeToBackground: [withAlpha(colors.background, 0), colors.background],
+      scrim: ['rgba(8, 6, 30, 0.35)', 'rgba(8, 6, 30, 0.75)'],
+    },
+  };
+};
 
 /**
  * Returns the active theme. The persisted toggle wins; until the user picks a

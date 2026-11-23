@@ -42,10 +42,10 @@ const listBody = {
   },
 };
 
-// Screens only use navigate/setOptions/popTo from navigation, so a stub is enough.
+// Screens only use navigate/goBack/popTo from navigation, so a stub is enough.
 const navigation = {
   navigate: jest.fn(),
-  setOptions: jest.fn(),
+  goBack: jest.fn(),
   popTo: jest.fn(),
 };
 
@@ -194,7 +194,9 @@ describe('CountryDetailsScreen', () => {
     expect(await screen.findByText('Republic of Sri Lanka')).toBeTruthy();
     // Headline stats are on the Overview tab; languages are on the Facts tab.
     expect(screen.getByText('65,610 km²')).toBeTruthy();
-    expect(screen.getByText(/Sri Lanka is a country in Southern Asia/)).toBeTruthy();
+    expect(
+      screen.getByText(/Sri Lanka is a country in Southern Asia/),
+    ).toBeTruthy();
     expect(screen.queryByText('Sinhala')).toBeNull();
 
     await fireEvent.press(screen.getByLabelText('Facts'));
@@ -202,7 +204,7 @@ describe('CountryDetailsScreen', () => {
     expect(new URL(requests[0].url).pathname).toBe('/v5/codes.alpha_3/LKA');
   });
 
-  it('puts a Share button in the header once the country has loaded', async () => {
+  it('shows Back, Favourite and Share on the photo once the country has loaded', async () => {
     mockFetch([
       {
         body: {
@@ -213,9 +215,32 @@ describe('CountryDetailsScreen', () => {
     await renderWithStore(<CountryDetailsScreen {...detailsProps('LKA')} />);
     await screen.findByText('Republic of Sri Lanka');
 
-    const options = navigation.setOptions.mock.calls.at(-1)?.[0];
-    expect(options.title).toBe('Sri Lanka');
-    expect(typeof options.headerRight).toBe('function');
+    expect(screen.getByLabelText('Share Sri Lanka')).toBeTruthy();
+    expect(screen.getByLabelText('Add Sri Lanka to favourites')).toBeTruthy();
+
+    await fireEvent.press(screen.getByLabelText('Go back'));
+    expect(navigation.goBack).toHaveBeenCalled();
+  });
+
+  it('opens the share sheet with the deep link and a Copy button', async () => {
+    mockFetch([
+      {
+        body: {
+          data: { objects: [country('Sri Lanka', 'LKA', 'Asia')], meta: {} },
+        },
+      },
+    ]);
+    await renderWithStore(<CountryDetailsScreen {...detailsProps('LKA')} />);
+    await screen.findByText('Republic of Sri Lanka');
+
+    await fireEvent.press(screen.getByLabelText('Share Sri Lanka'));
+    expect(await screen.findByText('Share Country')).toBeTruthy();
+    expect(screen.getByText('passport://country/LKA')).toBeTruthy();
+    expect(screen.getByLabelText('Share via WhatsApp')).toBeTruthy();
+    expect(screen.getByLabelText('Share via More')).toBeTruthy();
+
+    await fireEvent.press(screen.getByLabelText('Copy link'));
+    expect(screen.getByLabelText('Link copied')).toBeTruthy();
   });
 
   it('shows a friendly not-found state for an invalid code, with no request', async () => {
