@@ -5,7 +5,13 @@ import { useTheme, type Theme } from '../../../theme';
 import { AppText } from '../../../shared/components/AppText';
 import type { IconName } from '../../../shared/components/icons';
 
-type Props = { label: string; value: string; icon: IconName };
+type Props = {
+  label: string;
+  value: string;
+  icon: IconName;
+  /** Draw a hairline under the row (every row in a group except the last). */
+  divider?: boolean;
+};
 
 const ICON_BOX = 40;
 
@@ -14,17 +20,18 @@ const makeStyles = (theme: Theme) =>
     row: {
       flexDirection: 'row',
       alignItems: 'center',
-      padding: theme.spacing.md,
-      marginBottom: theme.spacing.sm,
-      borderRadius: theme.radius.md,
-      borderWidth: 1,
-      borderColor: theme.colors.glassBorder,
-      backgroundColor: theme.colors.glass,
+      paddingVertical: theme.spacing.md,
+      paddingHorizontal: theme.spacing.md,
     },
+    divider: {
+      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderBottomColor: theme.colors.glassBorder,
+    },
+    // Rounded square, not a circle, to match the Facts mock-up.
     iconBox: {
       width: ICON_BOX,
       height: ICON_BOX,
-      borderRadius: theme.radius.pill,
+      borderRadius: theme.radius.sm,
       alignItems: 'center',
       justifyContent: 'center',
       marginRight: theme.spacing.md,
@@ -33,15 +40,15 @@ const makeStyles = (theme: Theme) =>
     text: { flex: 1 },
   });
 
-/** A labelled fact with an icon, used on the Facts tab. */
-export const InfoRow = ({ label, value, icon }: Props) => {
+/** A labelled fact with an icon. Meant to sit inside a grouped card (see FactsTab). */
+export const InfoRow = ({ label, value, icon, divider = false }: Props) => {
   const theme = useTheme();
   const styles = useMemo(() => makeStyles(theme), [theme]);
   return (
     <View
       accessible
       accessibilityLabel={`${label}: ${value}`}
-      style={styles.row}
+      style={[styles.row, divider && styles.divider]}
     >
       <View style={styles.iconBox}>
         <Feather
@@ -51,10 +58,10 @@ export const InfoRow = ({ label, value, icon }: Props) => {
         />
       </View>
       <View style={styles.text}>
+        <AppText variant="label">{label}</AppText>
         <AppText variant="caption" muted>
-          {label}
+          {value}
         </AppText>
-        <AppText variant="label">{value}</AppText>
       </View>
     </View>
   );

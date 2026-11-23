@@ -13,6 +13,7 @@ import { ErrorView } from '../../../shared/components/ErrorView';
 import { LoadingView } from '../../../shared/components/LoadingView';
 import { Screen } from '../../../shared/components/Screen';
 import { SegmentedTabs } from '../../../shared/components/SegmentedTabs';
+import type { IconName } from '../../../shared/components/icons';
 import { getErrorMessage } from '../../../shared/utils/errors';
 import { formatNumber } from '../../../shared/utils/format';
 import { useTheme, type Theme } from '../../../theme';
@@ -75,6 +76,14 @@ const makeStyles = (theme: Theme) =>
     tabs: { marginTop: theme.spacing.lg },
     section: { marginTop: theme.spacing.lg },
     sectionTitle: { marginBottom: theme.spacing.sm },
+    // One glass card holding every fact row, separated by hairlines.
+    factsCard: {
+      borderRadius: theme.radius.md,
+      borderWidth: 1,
+      borderColor: theme.colors.glassBorder,
+      backgroundColor: theme.colors.glass,
+      overflow: 'hidden',
+    },
     placeholder: {
       alignItems: 'center',
       justifyContent: 'center',
@@ -131,57 +140,66 @@ const OverviewTab = ({
   );
 };
 
+type Fact = { icon: IconName; label: string; value: string | null };
+
+/** Facts in display order; a null value means "unknown", and that row is skipped. */
+const buildFacts = (country: Country): Fact[] => [
+  { icon: 'globe', label: 'Official Name', value: country.officialName },
+  {
+    icon: 'dollar-sign',
+    label: 'Currency',
+    value: country.currencies.length > 0 ? country.currencies.join(', ') : null,
+  },
+  {
+    icon: 'message-square',
+    label: 'Languages',
+    value: country.languages.length > 0 ? country.languages.join(', ') : null,
+  },
+  {
+    icon: 'users',
+    label: 'Population',
+    value:
+      country.population !== null ? formatNumber(country.population) : null,
+  },
+  {
+    icon: 'maximize-2',
+    label: 'Area',
+    value:
+      country.areaKm2 !== null ? `${formatNumber(country.areaKm2)} km²` : null,
+  },
+  { icon: 'map', label: 'Region', value: country.region },
+  { icon: 'navigation', label: 'Subregion', value: country.subregion ?? null },
+  {
+    icon: 'share-2',
+    label: 'Borders',
+    value: country.borders.length > 0 ? country.borders.join(', ') : null,
+  },
+];
+
 const FactsTab = ({
   country,
   styles,
 }: {
   country: Country;
   styles: Styles;
-}) => (
-  <View style={styles.section}>
-    <InfoRow icon="flag" label="Official Name" value={country.officialName} />
-    <InfoRow icon="hash" label="Country Code" value={country.code} />
-    {country.currencies.length > 0 ? (
-      <InfoRow
-        icon="dollar-sign"
-        label="Currency"
-        value={country.currencies.join(', ')}
-      />
-    ) : null}
-    {country.languages.length > 0 ? (
-      <InfoRow
-        icon="message-circle"
-        label="Languages"
-        value={country.languages.join(', ')}
-      />
-    ) : null}
-    {country.population !== null ? (
-      <InfoRow
-        icon="users"
-        label="Population"
-        value={formatNumber(country.population)}
-      />
-    ) : null}
-    {country.areaKm2 !== null ? (
-      <InfoRow
-        icon="maximize-2"
-        label="Area"
-        value={`${formatNumber(country.areaKm2)} km²`}
-      />
-    ) : null}
-    <InfoRow icon="map-pin" label="Region" value={country.region} />
-    {country.subregion ? (
-      <InfoRow icon="navigation" label="Subregion" value={country.subregion} />
-    ) : null}
-    {country.borders.length > 0 ? (
-      <InfoRow
-        icon="share-2"
-        label="Borders"
-        value={country.borders.join(', ')}
-      />
-    ) : null}
-  </View>
-);
+}) => {
+  const facts = buildFacts(country).filter(
+    (fact): fact is Fact & { value: string } => Boolean(fact.value),
+  );
+  return (
+    <View style={[styles.section, styles.factsCard]}>
+      {facts.map((fact, index) => (
+        <InfoRow
+          key={fact.label}
+          icon={fact.icon}
+          label={fact.label}
+          value={fact.value}
+          divider={index < facts.length - 1}
+        />
+      ))}
+    </View>
+  );
+};
 
 const MediaTab = ({ styles }: { styles: Styles }) => {
   const theme = useTheme();
