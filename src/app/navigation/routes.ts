@@ -3,6 +3,7 @@ export const ROUTES = {
   // Root
   Auth: 'Auth',
   App: 'App',
+  Tabs: 'Tabs',
   // Auth stack
   Onboarding: 'Onboarding',
   Login: 'Login',

@@ -20,7 +20,7 @@ const makeStyles = (theme: Theme) =>
     row: {
       flexDirection: 'row',
       alignItems: 'center',
-      paddingVertical: theme.spacing.md,
+      paddingVertical: theme.spacing.sm + theme.spacing.xs,
       paddingHorizontal: theme.spacing.md,
     },
     divider: {

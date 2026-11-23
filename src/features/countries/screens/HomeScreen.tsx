@@ -9,8 +9,12 @@ import {
 import Feather from '@react-native-vector-icons/feather';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppSelector } from '../../../app/hooks';
+import { images } from '../../../assets/images';
 import { ROUTES } from '../../../app/navigation/routes';
 import type { HomeStackScreenProps } from '../../../app/navigation/types';
+import type { AppStackParamList } from '../../../app/navigation/types';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AppText } from '../../../shared/components/AppText';
 import { BrandLogo } from '../../../shared/components/BrandLogo';
 import { HeroBackground } from '../../../shared/components/HeroBackground';
@@ -31,7 +35,7 @@ import type { Country } from '../types';
 
 /** Two columns from tablet width upwards. */
 const TABLET_BREAKPOINT = 600;
-const HERO_HEIGHT = 230;
+const HERO_HEIGHT = 250;
 
 const separatorStyles = StyleSheet.create({
   separator: { height: spacing.md },
@@ -66,7 +70,8 @@ const makeStyles = (theme: Theme) =>
       alignItems: 'center',
       gap: theme.spacing.sm,
       paddingHorizontal: theme.spacing.lg,
-      marginTop: theme.spacing.lg,
+      marginTop: -theme.spacing.xl,
+      zIndex: 1,
     },
     filterButton: {
       width: theme.minTouchSize,
@@ -82,7 +87,7 @@ const makeStyles = (theme: Theme) =>
       borderColor: theme.colors.primary,
       backgroundColor: theme.colors.primaryMuted,
     },
-    list: { padding: theme.spacing.lg },
+    list: { paddingHorizontal: theme.spacing.lg, paddingBottom: theme.spacing.lg },
     column: { gap: theme.spacing.md },
     cell: { flex: 1 },
   });
@@ -98,9 +103,8 @@ const matchesSearch = (country: Country, query: string): boolean => {
   );
 };
 
-export const HomeScreen = ({
-  navigation,
-}: HomeStackScreenProps<typeof ROUTES.Home>) => {
+export const HomeScreen = () => {
+  const navigation = useNavigation<NativeStackNavigationProp<AppStackParamList>>();
   const theme = useTheme();
   const styles = useMemo(() => makeStyles(theme), [theme]);
   const insets = useSafeAreaInsets();
@@ -179,7 +183,7 @@ export const HomeScreen = ({
 
   return (
     <Screen style={styles.screen}>
-      <HeroBackground twilight fade style={styles.hero}>
+      <HeroBackground source={images.night} scrim fade style={styles.hero}>
         <View
           style={[styles.header, { paddingTop: insets.top + theme.spacing.sm }]}
         >

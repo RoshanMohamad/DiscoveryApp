@@ -8,8 +8,6 @@ import {
   View,
 } from 'react-native';
 import Feather from '@react-native-vector-icons/feather';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { HeroBackground } from '../../../shared/components/HeroBackground';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { ROUTES } from '../../../app/navigation/routes';
 import type { AppTabScreenProps } from '../../../app/navigation/types';
@@ -27,20 +25,13 @@ const AVATAR_SIZE = 96;
 const makeStyles = (theme: Theme) =>
   StyleSheet.create({
     screen: { padding: 0 },
-    hero: { height: 150 },
-    titleRow: {
-      flex: 1,
-      flexDirection: 'row',
-      alignItems: 'flex-end',
-      gap: theme.spacing.sm,
-      paddingHorizontal: theme.spacing.lg,
-      paddingBottom: theme.spacing.md,
-    },
+    title: { paddingHorizontal: theme.spacing.lg, paddingTop: theme.spacing.lg },
     body: { flex: 1, paddingHorizontal: theme.spacing.lg },
     identity: {
       alignItems: 'center',
       marginBottom: theme.spacing.xl,
-      marginTop: theme.spacing.sm,
+      marginTop: theme.spacing.xl,
+      zIndex: 1,
     },
     avatar: {
       width: AVATAR_SIZE,
@@ -121,7 +112,6 @@ export const ProfileScreen = ({
 }: AppTabScreenProps<typeof ROUTES.ProfileTab>) => {
   const theme = useTheme();
   const styles = useMemo(() => makeStyles(theme), [theme]);
-  const insets = useSafeAreaInsets();
   const dispatch = useAppDispatch();
   const user = useAppSelector(state => state.auth.user);
   const savedCount = useAppSelector(selectFavouriteCodes).length;
@@ -138,20 +128,7 @@ export const ProfileScreen = ({
 
   return (
     <Screen style={styles.screen}>
-      <HeroBackground
-        twilight
-        fade
-        style={[styles.hero, { height: 150 + insets.top }]}
-      >
-        <View style={styles.titleRow}>
-          <Feather
-            name="user"
-            size={theme.iconSize.lg}
-            color={theme.colors.textOnPrimary}
-          />
-          <AppText variant="title">Profile</AppText>
-        </View>
-      </HeroBackground>
+      <AppText variant="title" style={styles.title}>Profile</AppText>
       <View style={styles.body}>
         <View style={styles.identity}>
           <View style={styles.avatar}>

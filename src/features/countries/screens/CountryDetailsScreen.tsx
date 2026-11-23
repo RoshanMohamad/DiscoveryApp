@@ -25,7 +25,7 @@ import { useGetCountryQuery } from '../countriesApi';
 import { describeCountry } from '../describe';
 import type { Country } from '../types';
 
-const HERO_HEIGHT = 330;
+const HERO_HEIGHT = 340;
 const FLAG_WIDTH = 56;
 const FLAG_HEIGHT = 40;
 const TABS = ['Overview', 'Facts', 'Media'] as const;
@@ -67,13 +67,16 @@ const makeStyles = (theme: Theme) =>
       marginTop: theme.spacing.xs,
       gap: theme.spacing.xs,
     },
-    body: { paddingHorizontal: theme.spacing.lg },
+    body: {
+      marginTop: -theme.spacing.lg,
+      paddingHorizontal: theme.spacing.lg,
+    },
     stats: {
       flexDirection: 'row',
       gap: theme.spacing.sm,
-      marginTop: theme.spacing.lg,
+      marginTop: theme.spacing.md,
     },
-    tabs: { marginTop: theme.spacing.lg },
+    tabs: { marginTop: theme.spacing.md },
     section: { marginTop: theme.spacing.lg },
     sectionTitle: { marginBottom: theme.spacing.sm },
     // One glass card holding every fact row, separated by hairlines.
@@ -84,6 +87,7 @@ const makeStyles = (theme: Theme) =>
       backgroundColor: theme.colors.glass,
       overflow: 'hidden',
     },
+    factList: { gap: theme.spacing.sm },
     placeholder: {
       alignItems: 'center',
       justifyContent: 'center',
@@ -95,6 +99,28 @@ const makeStyles = (theme: Theme) =>
       backgroundColor: theme.colors.glass,
     },
     placeholderText: { marginTop: theme.spacing.sm, textAlign: 'center' },
+    locationPreview: {
+      height: 118,
+      borderRadius: theme.radius.md,
+      overflow: 'hidden',
+      borderWidth: 1,
+      borderColor: theme.colors.glassBorder,
+      backgroundColor: theme.colors.surfaceAlt,
+    },
+    locationImage: { width: '100%', height: '100%', opacity: 0.62 },
+    locationPin: {
+      position: 'absolute',
+      alignSelf: 'center',
+      top: 38,
+      width: 38,
+      height: 38,
+      borderRadius: theme.radius.pill,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: theme.colors.primary,
+      borderWidth: 2,
+      borderColor: theme.colors.textOnPrimary,
+    },
   });
 
 const isNotFound = (error: unknown): boolean =>
@@ -125,15 +151,20 @@ const OverviewTab = ({
         <AppText variant="heading" style={styles.sectionTitle}>
           Location
         </AppText>
-        <View style={styles.placeholder}>
-          <Feather
-            name="map"
-            size={theme.iconSize.xl}
-            color={theme.colors.textMuted}
+        <View style={styles.locationPreview}>
+          <Image
+            source={images.lake}
+            style={styles.locationImage}
+            resizeMode="cover"
+            accessibilityIgnoresInvertColors
           />
-          <AppText variant="caption" muted style={styles.placeholderText}>
-            Map preview is not available in this demo.
-          </AppText>
+          <View style={styles.locationPin}>
+            <Feather
+              name="map-pin"
+              size={theme.iconSize.md}
+              color={theme.colors.textOnPrimary}
+            />
+          </View>
         </View>
       </View>
     </>
@@ -144,7 +175,8 @@ type Fact = { icon: IconName; label: string; value: string | null };
 
 /** Facts in display order; a null value means "unknown", and that row is skipped. */
 const buildFacts = (country: Country): Fact[] => [
-  { icon: 'globe', label: 'Official Name', value: country.officialName },
+  { icon: 'flag', label: 'Official Name', value: country.officialName },
+  { icon: 'hash', label: 'Country Code', value: country.code },
   {
     icon: 'dollar-sign',
     label: 'Currency',
@@ -187,15 +219,11 @@ const FactsTab = ({
     (fact): fact is Fact & { value: string } => Boolean(fact.value),
   );
   return (
-    <View style={[styles.section, styles.factsCard]}>
+    <View style={[styles.section, styles.factList]}>
       {facts.map((fact, index) => (
-        <InfoRow
-          key={fact.label}
-          icon={fact.icon}
-          label={fact.label}
-          value={fact.value}
-          divider={index < facts.length - 1}
-        />
+        <View key={fact.label} style={styles.factsCard}>
+          <InfoRow icon={fact.icon} label={fact.label} value={fact.value} />
+        </View>
       ))}
     </View>
   );

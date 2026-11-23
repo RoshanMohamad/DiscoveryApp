@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import Feather from '@react-native-vector-icons/feather';
 import { FavouritesScreen } from '../../features/favourites/screens/FavouritesScreen';
 import { ProfileScreen } from '../../features/settings/screens/ProfileScreen';
@@ -76,11 +75,14 @@ export const AppTabs = () => {
           borderTopWidth: 1,
           borderTopLeftRadius: radius.lg,
           borderTopRightRadius: radius.lg,
-          // Details is a full-screen page in the design: no tab bar on it.
-          display:
-            getFocusedRouteNameFromRoute(route) === ROUTES.CountryDetails
-              ? 'none'
-              : 'flex',
+          height: 68,
+          paddingTop: spacing.xs,
+          paddingBottom: spacing.sm,
+          display: 'flex',
+        },
+        tabBarLabelStyle: {
+          fontSize: 11,
+          fontWeight: '600',
         },
       })}
     >

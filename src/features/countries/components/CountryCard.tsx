@@ -25,7 +25,7 @@ const makeStyles = (theme: Theme) =>
       borderColor: theme.colors.glassBorder,
       borderWidth: 1,
       borderRadius: theme.radius.md,
-      padding: theme.spacing.md,
+      padding: theme.spacing.sm + theme.spacing.xs,
     },
     press: {
       flex: 1,
@@ -39,12 +39,12 @@ const makeStyles = (theme: Theme) =>
       borderRadius: theme.radius.sm,
       backgroundColor: theme.colors.surfaceAlt,
     },
-    body: { flex: 1, marginHorizontal: theme.spacing.md },
+    body: { flex: 1, marginHorizontal: theme.spacing.sm + theme.spacing.xs },
     name: { fontSize: 16, lineHeight: 22 },
     line: {
       flexDirection: 'row',
       alignItems: 'center',
-      marginTop: theme.spacing.xs,
+      marginTop: 2,
     },
     meta: {
       flexDirection: 'row',

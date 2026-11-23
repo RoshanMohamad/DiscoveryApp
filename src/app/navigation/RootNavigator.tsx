@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { CountryDetailsScreen } from '../../features/countries/screens/CountryDetailsScreen';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { selectIsAuthenticated } from '../../features/auth/authSlice';
 import {
@@ -10,9 +11,17 @@ import {
 import { AppTabs } from './AppTabs';
 import { AuthStack } from './AuthStack';
 import { ROUTES } from './routes';
-import type { RootStackParamList } from './types';
+import type { AppStackParamList, RootStackParamList } from './types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
+const AppStack = createNativeStackNavigator<AppStackParamList>();
+
+const AppFlow = () => (
+  <AppStack.Navigator screenOptions={{ headerShown: false }}>
+    <AppStack.Screen name={ROUTES.Tabs} component={AppTabs} />
+    <AppStack.Screen name={ROUTES.CountryDetails} component={CountryDetailsScreen} />
+  </AppStack.Navigator>
+);
 
 /** Auth flow vs app flow, decided purely by auth state. */
 export const RootNavigator = () => {
@@ -25,12 +34,8 @@ export const RootNavigator = () => {
   useEffect(() => {
     if (isAuthenticated && pendingCode) {
       navigation.navigate(ROUTES.App, {
-        screen: ROUTES.HomeTab,
-        params: {
-          screen: ROUTES.CountryDetails,
-          params: { code: pendingCode },
-          initial: false,
-        },
+        screen: ROUTES.CountryDetails,
+        params: { code: pendingCode },
       });
       dispatch(pendingLinkCleared());
     }
@@ -39,7 +44,7 @@ export const RootNavigator = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {isAuthenticated ? (
-        <Stack.Screen name={ROUTES.App} component={AppTabs} />
+        <Stack.Screen name={ROUTES.App} component={AppFlow} />
       ) : (
         <Stack.Screen name={ROUTES.Auth} component={AuthStack} />
       )}
