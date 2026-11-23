@@ -13,7 +13,7 @@ const Tab = createBottomTabNavigator<AppTabParamList>();
 type IconName = React.ComponentProps<typeof Feather>['name'];
 
 const TAB_ICONS: Record<keyof AppTabParamList, IconName> = {
-  [ROUTES.HomeTab]: 'globe',
+  [ROUTES.HomeTab]: 'home',
   [ROUTES.FavouritesTab]: 'heart',
   [ROUTES.ProfileTab]: 'user',
 };
@@ -37,15 +37,21 @@ export const AppTabs = () => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
+        // Each tab draws its own in-screen title, so no native header.
+        headerShown: false,
         tabBarActiveTintColor: theme.colors.primary,
         tabBarInactiveTintColor: theme.colors.textMuted,
         tabBarIcon: TAB_BAR_ICONS[route.name],
+        tabBarStyle: {
+          backgroundColor: theme.colors.surface,
+          borderTopColor: theme.colors.border,
+        },
       })}
     >
       <Tab.Screen
         name={ROUTES.HomeTab}
         component={HomeStack}
-        options={{ title: 'Home', headerShown: false }}
+        options={{ title: 'Home' }}
       />
       <Tab.Screen
         name={ROUTES.FavouritesTab}

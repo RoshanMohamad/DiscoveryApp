@@ -24,3 +24,12 @@
 
 ## Not verified on a device yet
 - No emulator/adb/Maestro on the machine used for this work. Lint, typecheck and Jest (incl. a navigation-level deep link test) pass; the app has NOT been run on Android/iOS, and the real REST Countries key has NOT been used (`.env` still has the placeholder).
+
+## UI redesign (from Roshan's mock-ups) — factual notes
+- Design used flat colours (no gradient library) so `react-native-linear-gradient` was not added (CLAUDE.md §2 / §8). Palette changed to indigo/violet tokens in `theme/colors.ts`; light and dark both updated.
+- Added screens: Onboarding (welcome + 3 slides, shown once; `onboarding.completed` is persisted via redux-persist/MMKV), Home search + "Filter by Region" bottom sheet, Details tabs (Overview / Facts / Media), Profile rows (Dark Mode, Saved Data, About Passport).
+- Shown as non-working placeholders on purpose (decision by Roshan): Google sign-in, Forgot password, notification bell, Details map, Media tab. They show a "not available in this demo" message instead of doing nothing.
+- Left out of the design: terms checkbox on Register (would change the Zod schema), and the custom WhatsApp/Telegram share sheet (spec requires native `Share.share`).
+- Register keeps First/Last name (DummyJSON needs them; names are required by the brief) although the mock-up omits them.
+- Login button is now "Sign In" and the title "Welcome Back"; Maestro flows were updated (they also skip onboarding after `clearState`).
+- The "About" text on Details is built from API fields in `describe.ts` (the API has no description).

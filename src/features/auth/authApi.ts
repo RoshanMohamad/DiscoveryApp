@@ -22,6 +22,7 @@ export type LoginResponse = {
   email: string;
   firstName: string;
   lastName: string;
+  image?: string;
   accessToken: string;
   refreshToken: string;
 };
@@ -40,6 +41,7 @@ export type MeResponse = {
   firstName: string;
   lastName: string;
   email: string;
+  image?: string;
 };
 
 export const authApi = api.injectEndpoints({

@@ -5,6 +5,11 @@ jest.mock('react-native-config', () => ({
   default: { AUTH_BASE_URL: 'https://dummyjson.com' },
 }));
 
+// Safe-area insets come from native code; the package ships a Jest mock.
+jest.mock('react-native-safe-area-context', () =>
+  require('react-native-safe-area-context/jest/mock').default,
+);
+
 jest.mock('react-native-keychain', () => {
   let stored = false;
   return {

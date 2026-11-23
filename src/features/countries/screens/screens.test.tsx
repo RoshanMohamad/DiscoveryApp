@@ -64,14 +64,17 @@ beforeEach(() => jest.clearAllMocks());
 
 describe('HomeScreen', () => {
   it('shows a loading state, then country cards with region / capital / population', async () => {
-    mockFetch([{ body: listBody }]);
+    mockFetch([{ body: listBody, delayMs: 50 }]);
     await renderWithStore(<HomeScreen {...homeProps} />);
 
     expect(screen.getByLabelText('Loading countries…')).toBeTruthy();
     expect(await screen.findByText('Sri Lanka')).toBeTruthy();
     expect(screen.getByText('France')).toBeTruthy();
+    // The card's accessibility label carries region / capital / population.
     expect(
-      screen.getByText('Asia · Sri Lanka City · 1,234,567 people'),
+      screen.getByLabelText(
+        'Sri Lanka. Asia · Sri Lanka City · 1,234,567 people',
+      ),
     ).toBeTruthy();
   });
 
@@ -83,7 +86,7 @@ describe('HomeScreen', () => {
       payload: { id: 1, username: 'e', firstName: 'Emily', lastName: 'J' },
     });
     await renderWithStore(<HomeScreen {...homeProps} />, store);
-    expect(await screen.findByText('Hello, Emily')).toBeTruthy();
+    expect(await screen.findByText(/Hello, Emily/)).toBeTruthy();
   });
 
   it('filters by region and opens a country by its code only', async () => {
@@ -99,6 +102,48 @@ describe('HomeScreen', () => {
     expect(navigation.navigate).toHaveBeenCalledWith(ROUTES.CountryDetails, {
       code: 'FRA',
     });
+  });
+
+  it('searches by country name or capital', async () => {
+    mockFetch([{ body: listBody }]);
+    await renderWithStore(<HomeScreen {...homeProps} />);
+    await screen.findByText('Sri Lanka');
+
+    await fireEvent.changeText(
+      screen.getByLabelText('Search countries, capitals...'),
+      'france',
+    );
+    expect(screen.queryByText('Sri Lanka')).toBeNull();
+    expect(screen.getByText('France')).toBeTruthy();
+
+    // "Sri Lanka City" is the capital in the fixture.
+    await fireEvent.changeText(
+      screen.getByLabelText('Search countries, capitals...'),
+      'lanka city',
+    );
+    expect(screen.getByText('Sri Lanka')).toBeTruthy();
+    expect(screen.queryByText('France')).toBeNull();
+
+    await fireEvent.changeText(
+      screen.getByLabelText('Search countries, capitals...'),
+      'zzz',
+    );
+    expect(await screen.findByText('No countries found')).toBeTruthy();
+  });
+
+  it('filters through the region sheet only after Apply Filter', async () => {
+    mockFetch([{ body: listBody }]);
+    await renderWithStore(<HomeScreen {...homeProps} />);
+    await screen.findByText('Sri Lanka');
+
+    await fireEvent.press(screen.getByLabelText('Filter by region'));
+    await fireEvent.press(screen.getByLabelText('Region Europe'));
+    // Choosing a row alone changes nothing yet.
+    expect(screen.getByText('Sri Lanka')).toBeTruthy();
+
+    await fireEvent.press(screen.getByText('Apply Filter'));
+    expect(screen.queryByText('Sri Lanka')).toBeNull();
+    expect(screen.getByText('France')).toBeTruthy();
   });
 
   it('shows an error with Retry, and Retry loads the list', async () => {
@@ -147,7 +192,12 @@ describe('CountryDetailsScreen', () => {
     await renderWithStore(<CountryDetailsScreen {...detailsProps('LKA')} />);
 
     expect(await screen.findByText('Republic of Sri Lanka')).toBeTruthy();
+    // Headline stats are on the Overview tab; languages are on the Facts tab.
     expect(screen.getByText('65,610 km²')).toBeTruthy();
+    expect(screen.getByText(/Sri Lanka is a country in Southern Asia/)).toBeTruthy();
+    expect(screen.queryByText('Sinhala')).toBeNull();
+
+    await fireEvent.press(screen.getByLabelText('Facts'));
     expect(screen.getByText('Sinhala')).toBeTruthy();
     expect(new URL(requests[0].url).pathname).toBe('/v5/codes.alpha_3/LKA');
   });

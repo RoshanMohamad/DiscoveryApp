@@ -8,8 +8,12 @@ import type { HomeStackParamList } from './types';
 const Stack = createNativeStackNavigator<HomeStackParamList>();
 
 export const HomeStack = () => (
-  <Stack.Navigator>
-    <Stack.Screen name={ROUTES.Home} component={HomeScreen} />
+  <Stack.Navigator screenOptions={{ headerShadowVisible: false }}>
+    <Stack.Screen
+      name={ROUTES.Home}
+      component={HomeScreen}
+      options={{ headerShown: false }}
+    />
     <Stack.Screen
       name={ROUTES.CountryDetails}
       component={CountryDetailsScreen}

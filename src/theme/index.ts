@@ -3,7 +3,7 @@ import { useColorScheme } from 'react-native';
 import { useAppSelector } from '../app/hooks';
 import { selectThemeMode } from '../features/settings/themeSlice';
 import { darkColors, lightColors, type ColorPalette } from './colors';
-import { MIN_TOUCH_SIZE, radius, spacing } from './spacing';
+import { iconSize, MIN_TOUCH_SIZE, radius, spacing } from './spacing';
 import { typography, type TypographyVariant } from './typography';
 
 export type Theme = {
@@ -11,6 +11,7 @@ export type Theme = {
   colors: ColorPalette;
   spacing: typeof spacing;
   radius: typeof radius;
+  iconSize: typeof iconSize;
   typography: typeof typography;
   minTouchSize: number;
 };
@@ -20,6 +21,7 @@ export const buildTheme = (isDark: boolean): Theme => ({
   colors: isDark ? darkColors : lightColors,
   spacing,
   radius,
+  iconSize,
   typography,
   minTouchSize: MIN_TOUCH_SIZE,
 });
@@ -35,5 +37,5 @@ export const useTheme = (): Theme => {
   return useMemo(() => buildTheme(isDark), [isDark]);
 };
 
-export { lightColors, darkColors, spacing, radius, typography };
+export { lightColors, darkColors, spacing, radius, iconSize, typography };
 export type { ColorPalette, TypographyVariant };

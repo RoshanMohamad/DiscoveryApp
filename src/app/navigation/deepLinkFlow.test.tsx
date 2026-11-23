@@ -5,6 +5,7 @@ import { act, screen } from '@testing-library/react-native';
 import { Provider } from 'react-redux';
 import { render } from '@testing-library/react-native';
 import { restoreFinished, signedIn } from '../../features/auth/authSlice';
+import { onboardingCompleted } from '../../features/onboarding/onboardingSlice';
 import { pendingLinkStored } from '../../features/share/pendingLinkSlice';
 import { makeTestStore, type TestStore } from '../../test/makeTestStore';
 import { mockFetch } from '../../test/mockFetch';
@@ -100,7 +101,7 @@ describe('deep link: passport://country/<CODE>', () => {
     routeFetch();
     const os = fakeLinking(null);
     await mountApp(loggedInStore());
-    expect(await screen.findByText('Hello, Emily')).toBeTruthy();
+    expect(await screen.findByText(/Hello, Emily/)).toBeTruthy();
 
     await os.open('passport://country/LKA');
 
@@ -112,10 +113,11 @@ describe('deep link: passport://country/<CODE>', () => {
     fakeLinking('passport://country/LKA');
     const store = makeTestStore();
     store.dispatch(restoreFinished());
+    store.dispatch(onboardingCompleted());
     await mountApp(store);
 
     // Logged out: the login screen shows and the code is remembered.
-    expect(await screen.findByText('Welcome to Passport')).toBeTruthy();
+    expect(await screen.findByText(/Welcome Back/)).toBeTruthy();
     expect(store.getState().pendingLink.code).toBe('LKA');
 
     // Log in: app opens straight onto that country, and the link is consumed.

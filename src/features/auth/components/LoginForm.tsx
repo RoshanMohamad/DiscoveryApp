@@ -1,15 +1,30 @@
 import React from 'react';
+import { Pressable, StyleSheet } from 'react-native';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { AppText } from '../../../shared/components/AppText';
 import { Button } from '../../../shared/components/Button';
 import { TextField } from '../../../shared/components/TextField';
+import { spacing, useTheme } from '../../../theme';
+import { MIN_TOUCH_SIZE } from '../../../theme/spacing';
 import { loginSchema, type LoginValues } from '../schemas';
 
 type Props = {
   onSubmit: (values: LoginValues) => void | Promise<void>;
+  onForgotPassword: () => void;
 };
 
-export const LoginForm = ({ onSubmit }: Props) => {
+const styles = StyleSheet.create({
+  forgot: {
+    alignSelf: 'flex-end',
+    justifyContent: 'center',
+    minHeight: MIN_TOUCH_SIZE,
+    marginBottom: spacing.sm,
+  },
+});
+
+export const LoginForm = ({ onSubmit, onForgotPassword }: Props) => {
+  const theme = useTheme();
   const {
     control,
     handleSubmit,
@@ -27,6 +42,7 @@ export const LoginForm = ({ onSubmit }: Props) => {
         render={({ field: { onChange, onBlur, value } }) => (
           <TextField
             label="Username"
+            icon="user"
             autoCapitalize="none"
             autoCorrect={false}
             textContentType="username"
@@ -43,6 +59,7 @@ export const LoginForm = ({ onSubmit }: Props) => {
         render={({ field: { onChange, onBlur, value } }) => (
           <TextField
             label="Password"
+            icon="lock"
             secureTextEntry
             autoCapitalize="none"
             textContentType="password"
@@ -53,8 +70,18 @@ export const LoginForm = ({ onSubmit }: Props) => {
           />
         )}
       />
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel="Forgot password?"
+        onPress={onForgotPassword}
+        style={styles.forgot}
+      >
+        <AppText variant="caption" style={{ color: theme.colors.primary }}>
+          Forgot password?
+        </AppText>
+      </Pressable>
       <Button
-        title="Log in"
+        title="Sign In"
         loading={isSubmitting}
         onPress={handleSubmit(onSubmit)}
       />

@@ -4,14 +4,17 @@ appId: com.passport
 ---
 - launchApp:
     clearState: true
-- assertVisible: "Welcome to Passport"
+# First launch shows the intro slides: Get Started -> Skip.
+- tapOn: "Get Started"
+- tapOn: "Skip"
+- assertVisible: "Welcome Back.*"
 # Validation: empty submit shows inline errors and stays on Login.
-- tapOn: "Log in"
-- assertVisible: "Welcome to Passport"
+- tapOn: "Sign In"
+- assertVisible: "Welcome Back.*"
 - tapOn: "Username"
 - inputText: "emilys"
 - tapOn: "Password"
 - inputText: "emilyspass"
 - hideKeyboard
-- tapOn: "Log in"
-- assertVisible: "Hello, Emily"
+- tapOn: "Sign In"
+- assertVisible: "Hello, Emily.*"

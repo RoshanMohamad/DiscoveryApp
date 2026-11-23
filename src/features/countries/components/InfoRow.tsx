@@ -1,35 +1,61 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { spacing, useTheme } from '../../../theme';
+import Feather from '@react-native-vector-icons/feather';
+import { useTheme, type Theme } from '../../../theme';
 import { AppText } from '../../../shared/components/AppText';
+import type { IconName } from '../../../shared/components/icons';
 
-type Props = { label: string; value: string };
+type Props = { label: string; value: string; icon: IconName };
 
-const styles = StyleSheet.create({
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: spacing.md,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  label: { flexShrink: 0, marginRight: spacing.lg },
-  value: { flex: 1, textAlign: 'right' },
-});
+const ICON_BOX = 40;
 
-export const InfoRow = ({ label, value }: Props) => {
+const makeStyles = (theme: Theme) =>
+  StyleSheet.create({
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: theme.spacing.md,
+      marginBottom: theme.spacing.sm,
+      borderRadius: theme.radius.md,
+      borderWidth: 1,
+      borderColor: theme.colors.border,
+      backgroundColor: theme.colors.surface,
+    },
+    iconBox: {
+      width: ICON_BOX,
+      height: ICON_BOX,
+      borderRadius: theme.radius.pill,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginRight: theme.spacing.md,
+      backgroundColor: theme.colors.primaryMuted,
+    },
+    text: { flex: 1 },
+  });
+
+/** A labelled fact with an icon, used on the Facts tab. */
+export const InfoRow = ({ label, value, icon }: Props) => {
   const theme = useTheme();
+  const styles = useMemo(() => makeStyles(theme), [theme]);
   return (
     <View
       accessible
       accessibilityLabel={`${label}: ${value}`}
-      style={[styles.row, { borderBottomColor: theme.colors.border }]}
+      style={styles.row}
     >
-      <AppText muted style={styles.label}>
-        {label}
-      </AppText>
-      <AppText variant="label" style={styles.value}>
-        {value}
-      </AppText>
+      <View style={styles.iconBox}>
+        <Feather
+          name={icon}
+          size={theme.iconSize.md}
+          color={theme.colors.primary}
+        />
+      </View>
+      <View style={styles.text}>
+        <AppText variant="caption" muted>
+          {label}
+        </AppText>
+        <AppText variant="label">{value}</AppText>
+      </View>
     </View>
   );
 };

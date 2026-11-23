@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Pressable, ScrollView, StyleSheet } from 'react-native';
-import { radius, spacing, useTheme } from '../../../theme';
+import Feather from '@react-native-vector-icons/feather';
+import { useTheme, type Theme } from '../../../theme';
 import { AppText } from '../../../shared/components/AppText';
-
-export const ALL_REGIONS = 'All';
+import { ALL_REGIONS, iconForRegion } from '../regionIcons';
 
 type Props = {
   regions: string[];
@@ -11,21 +11,30 @@ type Props = {
   onSelect: (region: string) => void;
 };
 
-const styles = StyleSheet.create({
-  scroller: { flexGrow: 0 },
-  row: { paddingHorizontal: spacing.lg, paddingVertical: spacing.sm },
-  chip: {
-    paddingHorizontal: spacing.lg,
-    marginRight: spacing.sm,
-    borderRadius: radius.pill,
-    borderWidth: 1,
-    justifyContent: 'center',
-  },
-});
+const makeStyles = (theme: Theme) =>
+  StyleSheet.create({
+    scroller: { flexGrow: 0 },
+    row: {
+      paddingHorizontal: theme.spacing.lg,
+      paddingVertical: theme.spacing.sm,
+    },
+    chip: {
+      minWidth: theme.minTouchSize + theme.spacing.lg,
+      minHeight: theme.minTouchSize + theme.spacing.lg,
+      marginRight: theme.spacing.sm,
+      paddingHorizontal: theme.spacing.md,
+      borderRadius: theme.radius.md,
+      borderWidth: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: theme.spacing.xs,
+    },
+  });
 
 /** Horizontal region filter ("All" + one chip per region found in the data). */
 export const RegionChips = ({ regions, selected, onSelect }: Props) => {
   const theme = useTheme();
+  const styles = useMemo(() => makeStyles(theme), [theme]);
   return (
     <ScrollView
       horizontal
@@ -35,6 +44,9 @@ export const RegionChips = ({ regions, selected, onSelect }: Props) => {
     >
       {[ALL_REGIONS, ...regions].map(region => {
         const isSelected = region === selected;
+        const tint = isSelected
+          ? theme.colors.textOnPrimary
+          : theme.colors.textMuted;
         return (
           <Pressable
             key={region}
@@ -45,7 +57,6 @@ export const RegionChips = ({ regions, selected, onSelect }: Props) => {
             style={[
               styles.chip,
               {
-                minHeight: theme.minTouchSize,
                 backgroundColor: isSelected
                   ? theme.colors.primary
                   : theme.colors.surface,
@@ -55,14 +66,12 @@ export const RegionChips = ({ regions, selected, onSelect }: Props) => {
               },
             ]}
           >
-            <AppText
-              variant="label"
-              style={{
-                color: isSelected
-                  ? theme.colors.textOnPrimary
-                  : theme.colors.text,
-              }}
-            >
+            <Feather
+              name={iconForRegion(region)}
+              size={theme.iconSize.md}
+              color={tint}
+            />
+            <AppText variant="caption" style={{ color: tint }}>
               {region}
             </AppText>
           </Pressable>

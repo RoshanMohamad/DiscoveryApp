@@ -1,6 +1,7 @@
 /* eslint-env jest */
 /** Tiny fetch fake: queue one response per call, inspect the Requests afterwards. */
-type Reply = { status?: number; body?: unknown } | Error;
+/** `delayMs` holds the reply back, so a test can observe the loading state. */
+type Reply = { status?: number; body?: unknown; delayMs?: number } | Error;
 
 /** Pass a queue (one reply per call, in order) or a function that answers by request. */
 export const mockFetch = (replies: Reply[] | ((request: Request) => Reply)) => {
@@ -14,6 +15,9 @@ export const mockFetch = (replies: Reply[] | ((request: Request) => Reply)) => {
     }
     if (next instanceof Error) {
       throw next;
+    }
+    if (next.delayMs) {
+      await new Promise<void>(resolve => setTimeout(resolve, next.delayMs));
     }
     return new Response(JSON.stringify(next.body ?? {}), {
       status: next.status ?? 200,

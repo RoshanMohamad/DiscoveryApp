@@ -5,6 +5,8 @@ export type AuthUser = {
   username: string;
   firstName: string;
   lastName: string;
+  /** Avatar URL from DummyJSON (not secret). */
+  image?: string;
 };
 
 export type AuthState = {

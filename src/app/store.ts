@@ -14,12 +14,16 @@ import { mmkvStorage } from './persistence';
 import { rootReducer } from './rootReducer';
 
 /**
- * Only favourites + theme survive a restart. Auth is deliberately NOT here
+ * Only favourites, theme and the "intro seen" flag survive a restart. Auth is deliberately NOT here
  * (the session is restored from the Keychain token) and the RTK Query cache
  * and pending link are rebuilt fresh.
  */
 const persistedReducer = persistReducer(
-  { key: 'root', storage: mmkvStorage, whitelist: ['favourites', 'theme'] },
+  {
+    key: 'root',
+    storage: mmkvStorage,
+    whitelist: ['favourites', 'theme', 'onboarding'],
+  },
   rootReducer,
 );
 

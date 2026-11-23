@@ -42,6 +42,7 @@ export const signIn = createAsyncThunk<
       username: result.username,
       firstName: result.firstName,
       lastName: result.lastName,
+      image: result.image,
     };
     dispatch(signedIn(user));
     return user;
@@ -95,6 +96,7 @@ export const restoreSession = createAsyncThunk<void, void>(
           username: me.username,
           firstName: me.firstName,
           lastName: me.lastName,
+          image: me.image,
         }),
       );
     } catch (error) {

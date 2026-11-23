@@ -5,13 +5,15 @@ appId: com.passport
 # 1) Logged in: the link opens that country's Details directly.
 - launchApp:
     clearState: true
+- tapOn: "Get Started"
+- tapOn: "Skip"
 - tapOn: "Username"
 - inputText: "emilys"
 - tapOn: "Password"
 - inputText: "emilyspass"
 - hideKeyboard
-- tapOn: "Log in"
-- assertVisible: "Hello, Emily"
+- tapOn: "Sign In"
+- assertVisible: "Hello, Emily.*"
 - openLink: "passport://country/LKA"
 - assertVisible: "Sri Lanka"
 - assertVisible: "Share Sri Lanka"
@@ -24,11 +26,13 @@ appId: com.passport
 - launchApp:
     clearState: true
 - openLink: "passport://country/LKA"
-- assertVisible: "Welcome to Passport"
+- tapOn: "Get Started"
+- tapOn: "Skip"
+- assertVisible: "Welcome Back.*"
 - tapOn: "Username"
 - inputText: "emilys"
 - tapOn: "Password"
 - inputText: "emilyspass"
 - hideKeyboard
-- tapOn: "Log in"
+- tapOn: "Sign In"
 - assertVisible: "Sri Lanka"
